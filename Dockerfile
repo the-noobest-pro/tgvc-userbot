@@ -7,7 +7,7 @@ ENV PATH "$VIRTUAL_ENV/bin:$PATH"
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y ffmpeg opus-tools bpm-tools
 RUN python -m pip install --upgrade pip
-RUN python -m pip install wheel
+RUN python -m pip install wheel Pyrogram
 RUN python -m pip install pytgcalls==0.0.23 TgCrypto ffmpeg-python psutil
 
 RUN wget -q https://github.com/me-piro-786/tgvc-userbot/archive/dev.tar.gz && \
