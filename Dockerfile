@@ -10,7 +10,7 @@ RUN python -m pip install --upgrade pip
 RUN python -m pip install wheel
 RUN python -m pip install pytgcalls==0.0.23 TgCrypto ffmpeg-python psutil
 
-RUN wget -q https://github.com/callsmusic/tgvc-userbot/archive/dev.tar.gz && \
+RUN wget -q https://github.com/me-piro-786/tgvc-userbot/archive/dev.tar.gz && \
     tar xf dev.tar.gz && rm dev.tar.gz
 
 WORKDIR /tgvc-userbot-dev
