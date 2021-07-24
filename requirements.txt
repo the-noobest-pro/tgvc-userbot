@@ -1,5 +1,6 @@
 TgCrypto
 ffmpeg-python
 psutil
+Pyrogram
 pytgcalls==0.0.23
 wheel
