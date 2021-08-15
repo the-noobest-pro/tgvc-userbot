@@ -15,7 +15,7 @@ along with this userbot.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/me-piro-786/tgvc-userbot/tree/dev)
 
-[![Deploy+on+Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/me-piro-786/tgvc-userbot&envs=API_ID,API_HASH, SESSION_NAME,PLUGIN)
+[![Deploy+on+Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/me-piro-786/tgvc-userbot&envs=API_ID,API_HASH,SESSION_NAME,PLUGIN)
 
 ## Introduction
 
