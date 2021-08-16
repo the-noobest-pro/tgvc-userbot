@@ -3,6 +3,7 @@ https://github.com/MarshalX/tgcalls/blob/main/examples/radio_as_smart_plugin.py
 154ef295a3fe3a2383bbd0275a1195c6fafd307d
 """
 import signal
+import re
 
 # noinspection PyPackageRequirements
 import ffmpeg  # pip install ffmpeg-python
