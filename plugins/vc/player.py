@@ -43,6 +43,7 @@ from pyrogram import Client, filters, emoji
 from pyrogram.methods.messages.download_media import DEFAULT_DOWNLOAD_DIR
 from pyrogram.types import Message
 from pytgcalls import GroupCall
+from ..main import app
 
 DELETE_DELAY = 8
 DURATION_AUTOPLAY_MIN = 10
@@ -254,7 +255,7 @@ async def play_track(client, m: Message):
     """
     chat_ = args.strip()
     await e3.edit(f"Searching Audios from :\n{chat_}")
-    async for gana in Client.search_messages(
+    async for gana in app.search_messages(
             chat_, limit=10, filter="audio"):       
         # check audio
         if gana.audio.duration > (DURATION_AUTOPLAY_MIN * 60 * 60):
