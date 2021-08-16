@@ -10,6 +10,7 @@ import asyncio
 import ffmpeg  # pip install ffmpeg-python
 from pyrogram import Client, filters
 from pyrogram.types import Message
+from youtube_dl import YoutubeDL
 
 from pytgcalls import GroupCall  # pip install pytgcalls
 
@@ -48,14 +49,14 @@ async def start(client, message: Message):
         return
     
     process = FFMPEG_PROCESSES.get(message.chat.id)
-        if process:
-            try:
-                process.send_signal(SIGINT)
-            except subprocess.TimeoutExpired:
-                process.kill()
-            except Exception as e:
-                print(e)
-                pass
+    if process:
+        try:
+            process.send_signal(SIGINT)
+        except subprocess.TimeoutExpired:
+            process.kill()
+        except Exception as e:
+            print(e)
+            pass
 
     query = message.command[1]
     station_stream_url = query
