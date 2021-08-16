@@ -252,7 +252,7 @@ async def play_track(client, m: Message):
         await m.reply_text(f"**Couldn't find Channel!** \n{fx}")
         return
     """
-    chat_ = args.strip()
+    chat_ = args_.strip()
     await e3.edit(f"Searching Audios from :\n{chat_}")
     async for gana in mp.search_messages(
             chat_, limit=10, filter="audio"):       
