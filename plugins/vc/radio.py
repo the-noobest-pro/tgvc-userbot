@@ -62,7 +62,7 @@ async def radio(client, message: Message):
         stderr=asyncio.subprocess.STDOUT,
         )
 
-    FFMPEG_PROCESSES[message.chat.id] = process to
+    FFMPEG_PROCESSES[message.chat.id] = process
     await message.reply_text(f'📻 Radio is Starting...')
     await asyncio.sleep(2)
     await group_call.start(message.chat.id)
