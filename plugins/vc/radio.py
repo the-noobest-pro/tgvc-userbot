@@ -41,7 +41,7 @@ async def start(client, message: Message):
         group_call = GroupCall(client, input_filename, path_to_log_file='')
         GROUP_CALLS[message.chat.id] = group_call
 
-    if not message.reply_to_message or len(message.command) < 2:
+    if len(message.command) < 2:
         await message.reply_text('You forgot to replay list of stations or pass a station ID')
         return
 
@@ -49,19 +49,10 @@ async def start(client, message: Message):
     if process:
         process.send_signal(signal.SIGTERM)
 
-    station_stream_url = None
-    station_id = message.command[1]
-    msg_lines = message.reply_to_message.text.split('\n')
-    for line in msg_lines:
-        line_prefix = f'{station_id}. '
-        if line.startswith(line_prefix):
-            station_stream_url = (
-                line.replace(line_prefix, '').replace('\n', '')
-            )
-            break
-
+    station_stream_url = message.command[1]
+    
     if not station_stream_url:
-        await message.reply_text(f'Can\'t find a station with id {station_id}')
+        await message.reply_text(f'Can\'t find a station.')
         return
 
     await group_call.start(message.chat.id)
@@ -75,7 +66,7 @@ async def start(client, message: Message):
     ).overwrite_output().run_async()
     FFMPEG_PROCESSES[message.chat.id] = process
 
-    await message.reply_text(f'Radio #{station_id} is playing...')
+    await message.reply_text(f'Radio is playing...')
 
 
 @Client.on_message(self_or_contact_filter & filters.command('stop', prefixes='!'))
