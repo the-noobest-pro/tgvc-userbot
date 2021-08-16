@@ -4,6 +4,7 @@ https://github.com/MarshalX/tgcalls/blob/main/examples/radio_as_smart_plugin.py
 """
 import signal
 import re
+import subprocess
 
 # noinspection PyPackageRequirements
 import asyncio
