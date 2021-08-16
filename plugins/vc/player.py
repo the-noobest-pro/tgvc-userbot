@@ -260,7 +260,7 @@ async def play_track(client, m: Message):
     chat_ = args.strip()
     await e3.edit(f"Searching Audios from :\n{chat_}")
     async for gana in client.search_messages(
-            chat_, limit, filter="audio"):       
+            chat_, limit=int(limit), filter="audio"):       
         # check audio
         if gana.audio.duration > (DURATION_AUTOPLAY_MIN * 60 * 60):
             continue
