@@ -224,8 +224,64 @@ async def play_track(client, m: Message):
     if not m.audio:
         await m.delete()
 
+@Client.on_message(
+    filters.group
+    & ~filters.edited
+    & current_vc
+    & (filters.regex("^(\\/|!)destination"))
+)
+async def play_track(client, m: Message):
+    group_call = mp.group_call
+    playlist = mp.playlist
+    e3 = await m.reply_text("`Processing ...`")
 
-
+    # iter audio
+    try:
+        args_ = m.text.split(maxsplit=1)[1]
+    except Exception as fx:
+        await m.reply_text(f"**Input Error:** \n{fx}")
+        return
+    """
+    if ";" in args:
+       split = args.split(";")
+       args = split[1].strip()
+       limit = split[1].strip()
+    try:
+        chat_ = await Client.get_chat(args_)
+    except Exception as fx:
+        await m.reply_text(f"**Couldn't find Channel!** \n{fx}")
+        return
+    """
+    chat_ = args.strip()
+    await e3.edit(f"Searching Audios from :\n{chat_}")
+    async for gana in Client.search_messages(
+            chat_, limit=10, filter="audio"):       
+        # check audio
+        if gana.audio.duration > (DURATION_AUTOPLAY_MIN * 60 * 60):
+            continue
+        if playlist and playlist[-1].audio.file_unique_id \
+                == gana.audio.file_unique_id:
+            continue
+        
+        playlist.append(gana)
+        if len(playlist) == 1:
+            m_status = await m.reply_text(
+                f"{emoji.INBOX_TRAY} downloading and transcoding..."
+            )
+            await download_audio(playlist[0])
+            group_call.input_filename = os.path.join(
+                client.workdir,
+                DEFAULT_DOWNLOAD_DIR,
+                f"{playlist[0].audio.file_unique_id}.raw"
+            )
+            await mp.update_start_time()
+            await m_status.delete()
+            print(f"- START PLAYING: {playlist[0].audio.title}")
+        await asyncio.sleep(3)
+    await e3.delete()
+    for track in playlist[:2]:
+        await download_audio(track)
+ 
 
 @Client.on_message(main_filter
                    & current_vc
