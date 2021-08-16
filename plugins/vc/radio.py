@@ -52,22 +52,25 @@ async def start(client, message: Message):
 
     query = message.command[1]
     match = STREAM_LINK.search(query)
-    station_stream_url = match.group(0)
+    station_stream_url = query
     
     if not station_stream_url:
         await message.reply_text(f'Can\'t find a station.')
         return
+    
+    ffmpeg_log = open("ffmpeg.log", "w+")
+        command=["ffmpeg", "-y", "-i", station_stream_url, "-f", "s16le", "-ac", "2",
+        "-ar", "48000", "-acodec", "pcm_s16le", group_call.input_filename]
+
+
+        process = await asyncio.create_subprocess_exec(
+            *command,
+            stdout=ffmpeg_log,
+            stderr=asyncio.subprocess.STDOUT,
+            )
 
     await group_call.start(message.chat.id)
-
-    process = (
-        ffmpeg.input(station_stream_url)
-        .output(input_filename, format='s16le', acodec='pcm_s16le', ac=2, ar='48k')
-        .overwrite_output()
-        .run_async()
-    )
     FFMPEG_PROCESSES[message.chat.id] = process
-
     await message.reply_text(f'Radio is playing...')
 
 
