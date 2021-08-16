@@ -8,6 +8,7 @@ import signal
 import ffmpeg  # pip install ffmpeg-python
 from pyrogram import Client, filters
 from pyrogram.types import Message
+
 from pytgcalls import GroupCall  # pip install pytgcalls
 
 # Example of pinned message in a chat:
@@ -22,17 +23,16 @@ To stop use !stop command
 
 
 # Commands available only for anonymous admins
-async def anon_filter(_, __, m: Message):
-    return bool(m.from_user is None and m.sender_chat)
-
-
-anonymous = filters.create(anon_filter)
+self_or_contact_filter = filters.create(
+    lambda _, __, message:
+    (message.from_user and message.from_user.is_contact) or message.outgoing
+)
 
 GROUP_CALLS = {}
 FFMPEG_PROCESSES = {}
 
 
-@Client.on_message(anonymous & filters.command('start', prefixes='!'))
+@Client.on_message(self_or_contact_filter & filters.command('start', prefixes='!'))
 async def start(client, message: Message):
     input_filename = f'radio-{message.chat.id}.raw'
 
@@ -42,9 +42,7 @@ async def start(client, message: Message):
         GROUP_CALLS[message.chat.id] = group_call
 
     if not message.reply_to_message or len(message.command) < 2:
-        await message.reply_text(
-            'You forgot to replay list of stations or pass a station ID'
-        )
+        await message.reply_text('You forgot to replay list of stations or pass a station ID')
         return
 
     process = FFMPEG_PROCESSES.get(message.chat.id)
