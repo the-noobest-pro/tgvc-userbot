@@ -6,6 +6,7 @@ import signal
 import re
 
 # noinspection PyPackageRequirements
+import asyncio
 import ffmpeg  # pip install ffmpeg-python
 from pyrogram import Client, filters
 from pyrogram.types import Message
