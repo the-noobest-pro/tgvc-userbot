@@ -32,7 +32,7 @@ self_or_contact_filter = filters.create(
 
 GROUP_CALLS = {}
 FFMPEG_PROCESSES = {}
-STREAM_LINK = re.compile(r"https?://[\S]+\.(?:m3u8?|audio|mp3|aac|[a-z]{1,4}:[0-9]+)")
+RADIO = {6}
 
 @Client.on_message(self_or_contact_filter & filters.command('start', prefixes='!'))
 async def start(client, message: Message):
@@ -46,15 +46,31 @@ async def start(client, message: Message):
     if len(message.command) < 2:
         await message.reply_text('You forgot to replay list of stations or pass a station ID')
         return
+    
+    process = FFMPEG_PROCESSES.get(CHAT)
+        if process:
+            try:
+                process.send_signal(SIGINT)
+            except subprocess.TimeoutExpired:
+                process.kill()
+            except Exception as e:
+                print(e)
+                pass
 
     query = message.command[1]
-    match = STREAM_LINK.search(query)
     station_stream_url = query
     
-    if not station_stream_url:
-        await message.reply_text(f'Can\'t find a station.')
-        return
+    try:
+        RADIO.remove(0)
+    except:
+        pass
+    try:
+        RADIO.add(1)
+    except:
+        pass
     
+    await group_call.start(message.chat.id)
+
     ffmpeg_log = open("ffmpeg.log", "w+")
     command = [
        "ffmpeg", "-y", "-i", station_stream_url, "-f", "s16le", "-ac", "2",
@@ -68,7 +84,6 @@ async def start(client, message: Message):
         stderr=asyncio.subprocess.STDOUT,
         )
 
-    await group_call.start(message.chat.id)
     FFMPEG_PROCESSES[message.chat.id] = process
     await message.reply_text(f'Radio is playing...')
 
