@@ -40,7 +40,6 @@ ydl_opts = {
     "nocheckcertificate": True
     }
 ydl = YoutubeDL(ydl_opts)
-links=[]
 
 
 @Client.on_message(self_or_contact_filter & filters.command('radio', prefixes='!'))
@@ -64,8 +63,7 @@ async def radio(client, message: Message):
         meta = ydl.extract_info(query, download=False)
         formats = meta.get('formats', [meta])
         for f in formats:
-            links.append(f['url'])
-        station_stream_url = links[0]
+            station_stream_url = f['url']
     else:
         station_stream_url = query
  
