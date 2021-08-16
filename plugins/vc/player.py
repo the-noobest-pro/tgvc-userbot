@@ -241,18 +241,23 @@ async def play_track(client, m: Message):
     except Exception as fx:
         await m.reply_text(f"**Input Error:** \n{fx}")
         return
+    
+    if ";" in args_:
+        split = args_.split(";")
+        args = split[0].strip()
+        limit = split[1].strip()
+    else:
+        args = args_
+        limit = 10
+
     """
-    if ";" in args:
-       split = args.split(";")
-       args = split[1].strip()
-       limit = split[1].strip()
     try:
         chat_ = await Client.get_chat(args_)
     except Exception as fx:
         await m.reply_text(f"**Couldn't find Channel!** \n{fx}")
         return
     """
-    chat_ = args_.strip()
+    chat_ = args.strip()
     await e3.edit(f"Searching Audios from :\n{chat_}")
     async for gana in client.search_messages(
             chat_, limit=10, filter="audio"):       
