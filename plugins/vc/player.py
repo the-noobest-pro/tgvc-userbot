@@ -258,7 +258,7 @@ async def play_track(client, m: Message):
         return
     """
     chat_ = args.strip()
-    limit_ = int(limit) + 1
+    limit_ = int(limit)
     await e3.edit(f"Searching Audios from :\n{chat_}")
     async for gana in client.search_messages(
             chat_, limit=int(limit_), filter="audio"):       
