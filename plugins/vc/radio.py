@@ -51,9 +51,7 @@ async def start(client, message: Message):
         process.send_signal(signal.SIGTERM)
 
     query = message.command[1]
-    if not (match := STREAM_LINK.search(query)):
-        return await message.reply_text("No Valid station id found to start the radio !")
-    await message.reply_text("📻 Connecting ...")
+    match = STREAM_LINK.search(query)
     station_stream_url = match.group(0)
     
     if not station_stream_url:
