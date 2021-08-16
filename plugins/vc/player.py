@@ -1,29 +1,22 @@
 """
 tgvc-userbot, Telegram Voice Chat Userbot
 Copyright (C) 2021  Dash Eclipse
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
-
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 Play and Control Audio playing in Telegram Voice Chat
-
 Dependencies:
 - ffmpeg
-
 Required group admin permissions:
 - Delete messages
 - Manage voice chats (optional)
-
 How to use:
 - Start the userbot
 - send !join to a voice chat enabled group chat
@@ -51,17 +44,16 @@ DURATION_PLAY_HOUR = 3
 USERBOT_HELP = f"""{emoji.LABEL}  **Common Commands**:
 __available to group members of current voice chat__
 __starts with / (slash) or ! (exclamation mark)__
-
 \u2022 **/play**  reply with an audio to play/queue it, or show playlist
+\u2022 **/playfrom [username/id] ; [n]**  plays the last n songs from that channel/group
+EX - `/playfrom @username ; 50` [plays last 50 songs]
+`/playfrom @username`  [plays last 10 songs, Default Limit = 10]     
 \u2022 **/current**  show current playing time of current track
 \u2022 **/repo**  show git repository of the userbot
 \u2022 `!help`  show help for commands
-
-
 {emoji.LABEL}  **Admin Commands**:
 __available to userbot account itself and its contacts__
 __starts with ! (exclamation mark)__
-
 \u2022 `!skip` [n] ...  skip current or n where n >= 2
 \u2022 `!join`  join voice chat of current group
 \u2022 `!leave`  leave current voice chat
@@ -76,7 +68,6 @@ __starts with ! (exclamation mark)__
 """
 
 USERBOT_REPO = f"""{emoji.ROBOT} **Telegram Voice Chat UserBot**
-
 - Repository: [GitHub](https://github.com/callsmusic/tgvc-userbot)
 - License: AGPL-3.0-or-later"""
 
@@ -224,8 +215,68 @@ async def play_track(client, m: Message):
     if not m.audio:
         await m.delete()
 
+@Client.on_message(
+    filters.group
+    & ~filters.edited
+    & current_vc
+    & (filters.regex("^(\\/|!)playfrom"))
+)
+async def play_track(client, m: Message):
+    group_call = mp.group_call
+    playlist = mp.playlist
+    e3 = await m.reply_text("`Processing ...`")
 
+    # iter audio
+    try:
+        args_ = m.text.split(maxsplit=1)[1]
+    except Exception as fx:
+        await m.reply_text(f"**Input Error:** \n{fx}")
+        return
+    
+    if ";" in args_:
+        split = args_.split(";")
+        args = split[0].strip()
+        limit = split[1].strip()
+    else:
+        args = args_
+        limit = 10
 
+    """
+    try:
+        chat_ = await Client.get_chat(args_)
+    except Exception as fx:
+        await m.reply_text(f"**Couldn't find Channel!** \n{fx}")
+        return
+    """
+    chat_ = args.strip()
+    limit_ = int(limit)
+    await e3.edit(f"Searching Audios from :\n{chat_}")
+    async for gana in client.search_messages(
+            chat_, limit=int(limit_), filter="audio"):       
+        # check audio
+        if gana.audio.duration > (DURATION_AUTOPLAY_MIN * 60 * 60):
+            continue
+        if playlist and playlist[-1].audio.file_unique_id \
+                == gana.audio.file_unique_id:
+            continue
+        
+        playlist.append(gana)
+        if len(playlist) == 1:
+            m_status = await m.reply_text(
+                f"{emoji.PLAY_BUTTON} **Playing** __the Last__ **{limit_}** __Songs from__ {chat_}"
+            )
+            await download_audio(playlist[0])
+            group_call.input_filename = os.path.join(
+                client.workdir,
+                DEFAULT_DOWNLOAD_DIR,
+                f"{playlist[0].audio.file_unique_id}.raw"
+            )
+            await mp.update_start_time()
+            await e3.delete()
+            print(f"- START PLAYING: {playlist[0].audio.title}")
+    for track in playlist[:2]:
+        await download_audio(track)
+ 
 
 @Client.on_message(main_filter
                    & current_vc
