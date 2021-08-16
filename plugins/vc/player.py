@@ -258,9 +258,10 @@ async def play_track(client, m: Message):
         return
     """
     chat_ = args.strip()
+    limit_ = int(limit) + 1
     await e3.edit(f"Searching Audios from :\n{chat_}")
     async for gana in client.search_messages(
-            chat_, limit=int(limit), filter="audio"):       
+            chat_, limit=int(limit_), filter="audio"):       
         # check audio
         if gana.audio.duration > (DURATION_AUTOPLAY_MIN * 60 * 60):
             continue
@@ -271,7 +272,7 @@ async def play_track(client, m: Message):
         playlist.append(gana)
         if len(playlist) == 1:
             m_status = await m.reply_text(
-                f"{emoji.PLAY_BUTTON} Playing the Recent {limit} Songs from {chat_}"
+                f"{emoji.PLAY_BUTTON} **Playing** __the Last__ **{limit_}** __Songs from__ {chat_}"
             )
             await download_audio(playlist[0])
             group_call.input_filename = os.path.join(
@@ -280,9 +281,8 @@ async def play_track(client, m: Message):
                 f"{playlist[0].audio.file_unique_id}.raw"
             )
             await mp.update_start_time()
-            print(f"- START PLAYING: {playlist[0].audio.title}")
-        await asyncio.sleep(3)
-    await e3.delete()
+            await e3.delete()
+            print(f"- START PLAYING: {playlist[0].audio.title}"
     for track in playlist[:2]:
         await download_audio(track)
  
