@@ -30,7 +30,7 @@ self_or_contact_filter = filters.create(
 
 GROUP_CALLS = {}
 FFMPEG_PROCESSES = {}
-
+STREAM_LINK = re.compile(r"https?://[\S]+\.(?:m3u8?|audio|mp3|aac|[a-z]{1,4}:[0-9]+)")
 
 @Client.on_message(self_or_contact_filter & filters.command('start', prefixes='!'))
 async def start(client, message: Message):
@@ -49,7 +49,11 @@ async def start(client, message: Message):
     if process:
         process.send_signal(signal.SIGTERM)
 
-    station_stream_url = message.command[1]
+    query = message.command[1]
+    if not (match := STREAM_LINK.search(query)):
+        return await message.reply_text("No Valid station id found to start the radio !")
+    await message.reply_text("📻 Connecting ...")
+    station_stream_url = match.group(0)
     
     if not station_stream_url:
         await message.reply_text(f'Can\'t find a station.')
@@ -57,13 +61,12 @@ async def start(client, message: Message):
 
     await group_call.start(message.chat.id)
 
-    process = ffmpeg.input(station_stream_url).output(
-        input_filename,
-        format='s16le',
-        acodec='pcm_s16le',
-        ac=2,
-        ar='48k'
-    ).overwrite_output().run_async()
+    process = (
+        ffmpeg.input(station_stream_url)
+        .output(input_filename, format='s16le', acodec='pcm_s16le', ac=2, ar='48k')
+        .overwrite_output()
+        .run_async()
+    )
     FFMPEG_PROCESSES[message.chat.id] = process
 
     await message.reply_text(f'Radio is playing...')
