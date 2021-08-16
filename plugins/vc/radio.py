@@ -50,8 +50,6 @@ async def radio(client, message: Message):
     query = message.command[1]
     station_stream_url = query
     
-    await group_call.start(message.chat.id)
-
     ffmpeg_log = open("ffmpeg.log", "w+")
     command = [
        "ffmpeg", "-y", "-i", station_stream_url, "-f", "s16le", "-ac", "2",
@@ -64,9 +62,10 @@ async def radio(client, message: Message):
         stderr=asyncio.subprocess.STDOUT,
         )
 
-    FFMPEG_PROCESSES[message.chat.id] = process
-    await message.reply_text(f'Radio is playing...')
-
+    FFMPEG_PROCESSES[message.chat.id] = process to
+    await message.reply_text(f'📻 Radio is Starting...')
+    await asyncio.sleep(2)
+    await group_call.start(message.chat.id)
 
 @Client.on_message(self_or_contact_filter & filters.command('stopradio', prefixes='!'))
 async def stopradio(_, message: Message):
