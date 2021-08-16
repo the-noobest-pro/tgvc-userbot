@@ -11,7 +11,6 @@ import asyncio
 import ffmpeg  # pip install ffmpeg-python
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from youtube_dl import YoutubeDL
 
 from pytgcalls import GroupCall  # pip install pytgcalls
 
@@ -35,8 +34,8 @@ self_or_contact_filter = filters.create(
 GROUP_CALLS = {}
 FFMPEG_PROCESSES = {}
 
-@Client.on_message(self_or_contact_filter & filters.command('start', prefixes='!'))
-async def start(client, message: Message):
+@Client.on_message(self_or_contact_filter & filters.command('radio', prefixes='!'))
+async def radio(client, message: Message):
     input_filename = f'radio-{message.chat.id}.raw'
 
     group_call = GROUP_CALLS.get(message.chat.id)
@@ -69,8 +68,8 @@ async def start(client, message: Message):
     await message.reply_text(f'Radio is playing...')
 
 
-@Client.on_message(self_or_contact_filter & filters.command('stop', prefixes='!'))
-async def stop(_, message: Message):
+@Client.on_message(self_or_contact_filter & filters.command('stopradio', prefixes='!'))
+async def stopradio(_, message: Message):
     group_call = GROUP_CALLS.get(message.chat.id)
     if group_call:
         await group_call.stop()
