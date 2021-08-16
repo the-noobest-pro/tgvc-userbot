@@ -26,7 +26,7 @@ To stop use !stop command
 '''
 
 
-# Commands available only for anonymous admins
+# Commands available only for owner and contacts
 self_or_contact_filter = filters.create(
     lambda _, __, message:
     (message.from_user and message.from_user.is_contact) or message.outgoing
@@ -34,7 +34,6 @@ self_or_contact_filter = filters.create(
 
 GROUP_CALLS = {}
 FFMPEG_PROCESSES = {}
-RADIO = {6}
 
 @Client.on_message(self_or_contact_filter & filters.command('start', prefixes='!'))
 async def start(client, message: Message):
@@ -47,29 +46,10 @@ async def start(client, message: Message):
 
     if len(message.command) < 2:
         await message.reply_text('You forgot to replay list of stations or pass a station ID')
-        return
+        return    
     
-    process = FFMPEG_PROCESSES.get(message.chat.id)
-    if process:
-        try:
-            process.send_signal(SIGINT)
-        except subprocess.TimeoutExpired:
-            process.kill()
-        except Exception as e:
-            print(e)
-            pass
-
     query = message.command[1]
     station_stream_url = query
-    
-    try:
-        RADIO.remove(0)
-    except:
-        pass
-    try:
-        RADIO.add(1)
-    except:
-        pass
     
     await group_call.start(message.chat.id)
 
@@ -78,7 +58,6 @@ async def start(client, message: Message):
        "ffmpeg", "-y", "-i", station_stream_url, "-f", "s16le", "-ac", "2",
        "-ar", "48000", "-acodec", "pcm_s16le", group_call.input_filename
        ]
-
 
     process = await asyncio.create_subprocess_exec(
         *command,
