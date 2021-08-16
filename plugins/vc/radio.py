@@ -59,7 +59,7 @@ async def start(client, message: Message):
         return
     
     ffmpeg_log = open("ffmpeg.log", "w+")
-        command=[
+        command = [
            "ffmpeg", "-y", "-i", station_stream_url, "-f", "s16le", "-ac", "2",
            "-ar", "48000", "-acodec", "pcm_s16le", group_call.input_filename
            ]
