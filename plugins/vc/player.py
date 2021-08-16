@@ -1,16 +1,21 @@
 """
 tgvc-userbot, Telegram Voice Chat Userbot
 Copyright (C) 2021  Dash Eclipse
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
+
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
 Play and Control Audio playing in Telegram Voice Chat
 Dependencies:
 - ffmpeg
@@ -26,6 +31,7 @@ How to use:
   can use the !play command now
 - check !help for more commands
 """
+
 import asyncio
 import os
 from datetime import datetime, timedelta
@@ -44,13 +50,18 @@ DURATION_PLAY_HOUR = 3
 USERBOT_HELP = f"""{emoji.LABEL}  **Common Commands**:
 __available to group members of current voice chat__
 __starts with / (slash) or ! (exclamation mark)__
+
 \u2022 **/play**  reply with an audio to play/queue it, or show playlist
+
 \u2022 **/playfrom [username/id] ; [n]**  plays the last n songs from that channel/group
 EX - `/playfrom @username ; 50` [plays last 50 songs]
 `/playfrom @username`  [plays last 10 songs, Default Limit = 10]     
+
 \u2022 **/current**  show current playing time of current track
 \u2022 **/repo**  show git repository of the userbot
 \u2022 `!help`  show help for commands
+
+
 {emoji.LABEL}  **Admin Commands**:
 __available to userbot account itself and its contacts__
 __starts with ! (exclamation mark)__
