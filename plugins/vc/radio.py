@@ -12,6 +12,7 @@ import ffmpeg  # pip install ffmpeg-python
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
+from youtube_dl import YoutubeDL
 from pytgcalls import GroupCall  # pip install pytgcalls
 
 # Example of pinned message in a chat:
@@ -34,6 +35,14 @@ self_or_contact_filter = filters.create(
 GROUP_CALLS = {}
 FFMPEG_PROCESSES = {}
 
+ydl_opts = {
+    "geo-bypass": True,
+    "nocheckcertificate": True
+    }
+ydl = YoutubeDL(ydl_opts)
+links=[]
+
+
 @Client.on_message(self_or_contact_filter & filters.command('radio', prefixes='!'))
 async def radio(client, message: Message):
     input_filename = f'radio-{message.chat.id}.raw'
@@ -48,8 +57,18 @@ async def radio(client, message: Message):
         return    
     
     query = message.command[1]
-    station_stream_url = query
-    
+
+    regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
+    match = re.match(regex,query)
+    if match:
+        meta = ydl.extract_info(query, download=False)
+        formats = meta.get('formats', [meta])
+        for f in formats:
+            links.append(f['url'])
+        station_stream_url = links[0]
+    else:
+        station_stream_url = query
+ 
     ffmpeg_log = open("ffmpeg.log", "w+")
     command = [
        "ffmpeg", "-y", "-i", station_stream_url, "-f", "s16le", "-ac", "2",
