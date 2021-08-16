@@ -228,7 +228,7 @@ async def play_track(client, m: Message):
     filters.group
     & ~filters.edited
     & current_vc
-    & (filters.regex("^(\\/|!)destination"))
+    & (filters.regex("^(\\/|!)playfrom"))
 )
 async def play_track(client, m: Message):
     group_call = mp.group_call
@@ -271,7 +271,7 @@ async def play_track(client, m: Message):
         playlist.append(gana)
         if len(playlist) == 1:
             m_status = await m.reply_text(
-                f"{emoji.INBOX_TRAY} downloading and transcoding..."
+                f"{emoji.PLAY_BUTTON} Playing the Recent {limit} Songs from {chat_}"
             )
             await download_audio(playlist[0])
             group_call.input_filename = os.path.join(
@@ -280,7 +280,6 @@ async def play_track(client, m: Message):
                 f"{playlist[0].audio.file_unique_id}.raw"
             )
             await mp.update_start_time()
-            await m_status.delete()
             print(f"- START PLAYING: {playlist[0].audio.title}")
         await asyncio.sleep(3)
     await e3.delete()
