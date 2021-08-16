@@ -43,7 +43,7 @@ from pyrogram import Client, filters, emoji
 from pyrogram.methods.messages.download_media import DEFAULT_DOWNLOAD_DIR
 from pyrogram.types import Message
 from pytgcalls import GroupCall
-from ..userbot import app
+from ..testing import app
 
 DELETE_DELAY = 8
 DURATION_AUTOPLAY_MIN = 10
