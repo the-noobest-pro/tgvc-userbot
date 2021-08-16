@@ -65,11 +65,11 @@ async def start(client, message: Message):
        ]
 
 
-        process = await asyncio.create_subprocess_exec(
-           *command,
-            stdout=ffmpeg_log,
-            stderr=asyncio.subprocess.STDOUT,
-            )
+    process = await asyncio.create_subprocess_exec(
+        *command,
+        stdout=ffmpeg_log,
+        stderr=asyncio.subprocess.STDOUT,
+        )
 
     await group_call.start(message.chat.id)
     FFMPEG_PROCESSES[message.chat.id] = process
