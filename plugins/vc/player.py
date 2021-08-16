@@ -53,6 +53,10 @@ __available to group members of current voice chat__
 __starts with / (slash) or ! (exclamation mark)__
 
 \u2022 **/play**  reply with an audio to play/queue it, or show playlist
+
+\u2022 **/playfrom [username/id] ; [n]**  plays the last n songs from that channel/group
+\u2022 EX:- `/playfrom @username ; 50`
+\u2022      `/playfrom @username`  [plays last 10 songs, Default Limit = 10]            
 \u2022 **/current**  show current playing time of current track
 \u2022 **/repo**  show git repository of the userbot
 \u2022 `!help`  show help for commands
