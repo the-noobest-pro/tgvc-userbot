@@ -47,10 +47,6 @@ async def start(client, message: Message):
         await message.reply_text('You forgot to replay list of stations or pass a station ID')
         return
 
-    process = FFMPEG_PROCESSES.get(message.chat.id)
-    if process:
-        process.send_signal(signal.SIGTERM)
-
     query = message.command[1]
     match = STREAM_LINK.search(query)
     station_stream_url = query
