@@ -69,7 +69,7 @@ async def stream(client, message: Message):
     chat_id = message.chat.id
     radiostrt = await message.reply_text(f'📻 Radio is Starting...')
     await asyncio.sleep(3)
-    await radiostrt.edit(f'📻 Started [**Live Streaming**]({query}) in `{chat_id}`', disable_web_page_preview=True)
+    await radiostrt.edit(f'📻 Started **[Live Streaming]({query})** in `{chat_id}`', disable_web_page_preview=True)
     await group_call.start(message.chat.id)
 
 
