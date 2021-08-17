@@ -3,7 +3,6 @@ https://github.com/MarshalX/tgcalls/blob/main/examples/radio_as_smart_plugin.py
 154ef295a3fe3a2383bbd0275a1195c6fafd307d
 """
 import signal
-import re
 import subprocess
 
 import asyncio
@@ -11,7 +10,6 @@ import ffmpeg
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
-from youtube_dl import YoutubeDL
 from pytgcalls import GroupCall 
 
 
@@ -26,12 +24,6 @@ self_or_contact_filter = filters.create(
 
 GROUP_CALLS = {}
 FFMPEG_PROCESSES = {}
-
-ydl_opts = {
-    "geo-bypass": True,
-    "nocheckcertificate": True
-    }
-ydl = YoutubeDL(ydl_opts)
 
 
 @Client.on_message(self_or_contact_filter & filters.command('radio', prefixes='!'))
@@ -49,15 +41,7 @@ async def radio(client, message: Message):
     
     query = message.command[1]
 
-    regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
-    match = re.match(regex,query)
-    if match:
-        meta = ydl.extract_info(query, download=False)
-        formats = meta.get('formats', [meta])
-        for f in formats:
-            station_stream_url = f['url']
-    else:
-        station_stream_url = query
+    station_stream_url = query
  
     ffmpeg_log = open("ffmpeg.log", "w+")
     command = [
