@@ -69,7 +69,7 @@ async def radio(client, message: Message):
     chat_id = message.chat.id
     radiostrt = await message.reply_text(f'📻 Radio is Starting...')
     await asyncio.sleep(3)
-    await radiostrt.edit(f'📻 Started Playing Radio in `{chat_id}`')
+    await radiostrt.edit(f'📻 Started Playing [Radio]({query}) in `{chat_id}`', disable_web_page_preview=True)
     await group_call.start(message.chat.id)
 
 
@@ -83,4 +83,4 @@ async def stopradio(_, message: Message):
     group_call = GROUP_CALLS.get(message.chat.id)
     if group_call:
         await group_call.stop()
-        await message.reply_text(f'✋ Stopped Streaming')
+        await message.reply_text(f'⏹ Stopped Streaming')
