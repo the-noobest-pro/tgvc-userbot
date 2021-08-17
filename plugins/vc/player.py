@@ -85,7 +85,7 @@ __starts with ! (exclamation mark)__
 
 USERBOT_REPO = f"""{emoji.ROBOT} **Telegram Voice Chat UserBot**
 
-- Repository: [GitHub](https://github.com/callsmusic/tgvc-userbot)
+- Repository: [GitHub](https://github.com/me-piro-786/tgvc-userbot)
 - License: AGPL-3.0-or-later"""
 
 # - Pyrogram filters
@@ -320,11 +320,7 @@ async def show_current_playing_time(_, m: Message):
                    & (self_or_contact_filter | current_vc)
                    & filters.regex("^(\\/|!)help$"))
 async def show_help(_, m: Message):
-    if mp.msg.get('help') is not None:
-        await mp.msg['help'].delete()
-    mp.msg['help'] = await m.reply_text(USERBOT_HELP, quote=False)
-    await m.delete()
-
+    await m.reply_text("https://telegra.ph/Live-Radio-Stream-Links-05-17", disable_web_page_preview=True)
 
 @Client.on_message(main_filter
                    & self_or_contact_filter
