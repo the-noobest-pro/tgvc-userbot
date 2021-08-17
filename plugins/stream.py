@@ -88,3 +88,9 @@ async def stopradio(_, message: Message):
     if group_call:
         await group_call.stop()
         await message.reply_text(f'⏹ Stopped Streaming')
+
+
+@Client.on_message(self_or_contact_filter & filters.command('radio', prefixes='!'))
+async def show_radio_help(_, m: Message):
+    await m.reply_text(f'- [Some Live Stream Links Here](https://telegra.ph/Some-Radio-Links-08-17) \n- You can also use YT-LIVE URL's \n\n`!stream {stream_url}`  -  __Starts Live Stream from that Link__ \n`!end`  -  __Stops the Live Stream__', disable_web_page_preview=True)
+
