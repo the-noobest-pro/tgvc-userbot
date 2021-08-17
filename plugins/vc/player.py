@@ -35,9 +35,7 @@ How to use:
 """
 import asyncio
 import os
-import signal
-import re
-import subprocess
+
 from datetime import datetime, timedelta
 
 # noinspection PyPackageRequirements
@@ -46,18 +44,12 @@ from pyrogram import Client, filters, emoji
 from pyrogram.methods.messages.download_media import DEFAULT_DOWNLOAD_DIR
 from pyrogram.types import Message
 from pytgcalls import GroupCall
-from youtube_dl import YoutubeDL
+
 
 DELETE_DELAY = 8
 DURATION_AUTOPLAY_MIN = 10
 DURATION_PLAY_HOUR = 3
-GROUP_CALLS = {}
-FFMPEG_PROCESSES = {}
-ydl_opts = {
-    "geo-bypass": True,
-    "nocheckcertificate": True
-    }
-ydl = YoutubeDL(ydl_opts)
+
 
 USERBOT_HELP = f"""{emoji.LABEL}  **Common Commands**:
 __available to group members of current voice chat__
@@ -521,58 +513,6 @@ async def show_repository(_, m: Message):
         quote=False
     )
     await m.delete()
-
-# Radio Mode
-# Special Thanks to AsmSafone for the YTDL filter.
-
-@Client.on_message(self_or_contact_filter & filters.command('radio', prefixes='!'))
-async def radio(client, message: Message):
-    input_filename = f'radio-{message.chat.id}.raw'
-
-    radio_call = GROUP_CALLS.get(message.chat.id)
-    if radio_call is None:
-        radio_call = GroupCall(client, input_filename, path_to_log_file='')
-        GROUP_CALLS[message.chat.id] = radio_call
-
-    if len(message.command) < 2:
-        await message.reply_text('You forgot to enter a Stream URL')
-        return    
-       
-    query = message.command[1]
-
-    regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
-    match = re.match(regex,query)
-    if match:
-        meta = ydl.extract_info(query, download=False)
-        formats = meta.get('formats', [meta])
-        for f in formats:
-            station_stream_url = f['url']
-    else:
-        station_stream_url = query
- 
-    process = (
-        ffmpeg.input(station_stream_url)
-        .output(input_filename, format='s16le', acodec='pcm_s16le', ac=2, ar='48k')
-        .overwrite_output()
-        .run_async()
-    )
-
-    FFMPEG_PROCESSES[message.chat.id] = process
-    await message.reply_text(f'📻 Radio is Starting...')
-    await asyncio.sleep(2)
-    await radio_call.start(message.chat.id)
-
-
-@Client.on_message(self_or_contact_filter & filters.command('sradio', prefixes='!'))
-async def stopradio(_, message: Message):
-
-    radio_call = GROUP_CALLS.get(message.chat.id)
-    if radio_call:
-        os.remove(f'radio-{message.chat.id}.raw')
-        await asyncio.sleep(2)
-        await radio_call.stop()
-        await message.reply_text(f'✋ Stopped Streaming')
-
 
 # - Other functions
 
