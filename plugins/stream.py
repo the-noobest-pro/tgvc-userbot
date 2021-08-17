@@ -56,7 +56,7 @@ async def stream(client, message: Message):
                 ytstreamlink = f['url']
             station_stream_url = ytstreamlink
         except Exception as e:
-            await message.reply_text(f'**⚠️ Error** /n{e}')
+            await message.reply_text(f'**⚠️ Error** \n{e}')
             print(e)
     else:
         station_stream_url = query
