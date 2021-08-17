@@ -25,7 +25,7 @@ FFMPEG_PROCESSES = {}
 
 ydl_opts = {
     "geo_bypass": True,
-    "geo_verification_proxy": "socks5://127.0.0.1:1080",
+    "geo_bypass_country": "IN",
     "nocheckcertificate": True
     }
 ydl = YoutubeDL(ydl_opts)
@@ -49,12 +49,15 @@ async def stream(client, message: Message):
     regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
     match = re.match(regex,query)
     if match:
-        meta = ydl.extract_info(query, download=False)
-        formats = meta.get('formats', [meta])
-        for f in formats:
-            ytstreamlink = f['url']
-        station_stream_url = ytstreamlink
-        print(station_stream_url)
+        try:
+            meta = ydl.extract_info(query, download=False)
+            formats = meta.get('formats', [meta])
+            for f in formats:
+                ytstreamlink = f['url']
+            station_stream_url = ytstreamlink
+        except Exception as e:
+            await message.reply_text(f'**⚠️ Error** /n{e}')
+            print(e)
     else:
         station_stream_url = query
         print(station_stream_url)
