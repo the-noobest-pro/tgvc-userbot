@@ -537,10 +537,6 @@ async def radio(client, message: Message):
     if len(message.command) < 2:
         await message.reply_text('You forgot to enter a Stream URL')
         return    
-    
-    process = FFMPEG_PROCESSES.get(message.chat.id)
-    if process:
-        process.send_signal(signal.SIGTERM)
        
     query = message.command[1]
 
