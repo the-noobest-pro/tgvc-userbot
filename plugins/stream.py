@@ -30,8 +30,8 @@ ydl_opts = {
 ydl = YoutubeDL(ydl_opts)
 
 
-@Client.on_message(self_or_contact_filter & filters.command('radio', prefixes='!'))
-async def radio(client, message: Message):
+@Client.on_message(self_or_contact_filter & filters.command('stream', prefixes='!'))
+async def stream(client, message: Message):
     input_filename = f'radio-{message.chat.id}.raw'
 
     group_call = GROUP_CALLS.get(message.chat.id)
@@ -69,11 +69,11 @@ async def radio(client, message: Message):
     chat_id = message.chat.id
     radiostrt = await message.reply_text(f'📻 Radio is Starting...')
     await asyncio.sleep(3)
-    await radiostrt.edit(f'📻 Started Playing [Radio]({query}) in `{chat_id}`', disable_web_page_preview=True)
+    await radiostrt.edit(f'📻 Started [Live Streaming]({query}) in `{chat_id}`', disable_web_page_preview=True)
     await group_call.start(message.chat.id)
 
 
-@Client.on_message(self_or_contact_filter & filters.command('stopradio', prefixes='!'))
+@Client.on_message(self_or_contact_filter & filters.command('end', prefixes='!'))
 async def stopradio(_, message: Message):
     process = FFMPEG_PROCESSES.get(message.chat.id)
     if process:
