@@ -25,6 +25,7 @@ FFMPEG_PROCESSES = {}
 
 ydl_opts = {
     "geo_bypass": True,
+    "geo_verification_proxy": "socks5://127.0.0.1:1080",
     "nocheckcertificate": True
     }
 ydl = YoutubeDL(ydl_opts)
