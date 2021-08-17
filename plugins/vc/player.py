@@ -529,10 +529,10 @@ async def show_repository(_, m: Message):
 async def radio(client, message: Message):
     input_filename = f'radio-{message.chat.id}.raw'
 
-    group_call = GROUP_CALLS.get(message.chat.id)
-    if group_call is None:
-        group_call = GroupCall(client, input_filename, path_to_log_file='')
-        GROUP_CALLS[message.chat.id] = group_call
+    radio_call = GROUP_CALLS.get(message.chat.id)
+    if radio_call is None:
+        radio_call = GroupCall(client, input_filename, path_to_log_file='')
+        GROUP_CALLS[message.chat.id] = radio_call
 
     if len(message.command) < 2:
         await message.reply_text('You forgot to enter a Stream URL')
@@ -560,17 +560,15 @@ async def radio(client, message: Message):
     FFMPEG_PROCESSES[message.chat.id] = process
     await message.reply_text(f'📻 Radio is Starting...')
     await asyncio.sleep(2)
-    await group_call.start(message.chat.id)
+    await radio_call.start(message.chat.id)
 
 
-@Client.on_message(self_or_contact_filter & filters.command('stopradio', prefixes='!'))
+@Client.on_message(self_or_contact_filter & filters.command('sradio', prefixes='!'))
 async def stopradio(_, message: Message):
-    process = FFMPEG_PROCESSES.get(message.chat.id)
 
-    
-    group_call = GROUP_CALLS.get(message.chat.id)
-    if group_call:
-        await group_call.stop()
+    radio_call = GROUP_CALLS.get(message.chat.id)
+    if radio_call:
+        await radio_call.stop()
         await asyncio.sleep(1)
         await message.reply_text(f'✋ Stopped Streaming')
 
