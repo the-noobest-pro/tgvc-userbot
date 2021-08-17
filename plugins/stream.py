@@ -51,9 +51,12 @@ async def radio(client, message: Message):
         meta = ydl.extract_info(query, download=False)
         formats = meta.get('formats', [meta])
         for f in formats:
-            station_stream_url = f['url']
+            ytstreamlink = f['url']
+        station_stream_url = ytstreamlink
+        print(station_stream_url)
     else:
         station_stream_url = query
+        print(station_stream_url)
 
     process = (
         ffmpeg.input(station_stream_url)
@@ -63,8 +66,9 @@ async def radio(client, message: Message):
     )
 
     FFMPEG_PROCESSES[message.chat.id] = process
-    await message.reply_text(f'📻 Radio is Starting...')
-    await asyncio.sleep(2)
+    radiostrt = await message.reply_text(f'📻 Radio is Starting...')
+    await asyncio.sleep(10)
+    await radiostrt.edit(f'▶️ Started Playing Radio from {station_stream_url}')
     await group_call.start(message.chat.id)
 
 
