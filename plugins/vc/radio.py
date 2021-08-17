@@ -6,27 +6,17 @@ import signal
 import re
 import subprocess
 
-# noinspection PyPackageRequirements
 import asyncio
-import ffmpeg  # pip install ffmpeg-python
+import ffmpeg 
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
 from youtube_dl import YoutubeDL
-from pytgcalls import GroupCall  # pip install pytgcalls
-
-# Example of pinned message in a chat:
-'''
-Radio stations:
-
-1. https://hls-01-regions.emgsound.ru/11_msk/playlist.m3u8
-
-To start replay to this message with command !start <ID>
-To stop use !stop command
-'''
+from pytgcalls import GroupCall 
 
 
 # Commands available only for owner and contacts
+
 self_or_contact_filter = filters.create(
     lambda _, __, message:
     (message.from_user and message.from_user.is_contact) or message.outgoing
@@ -52,7 +42,7 @@ async def radio(client, message: Message):
         GROUP_CALLS[message.chat.id] = group_call
 
     if len(message.command) < 2:
-        await message.reply_text('You forgot to replay list of stations or pass a station ID')
+        await message.reply_text('You forgot to enter a Stream URL')
         return    
     
     query = message.command[1]
@@ -84,11 +74,13 @@ async def radio(client, message: Message):
     await asyncio.sleep(2)
     await group_call.start(message.chat.id)
 
+
 @Client.on_message(self_or_contact_filter & filters.command('stopradio', prefixes='!'))
 async def stopradio(_, message: Message):
     group_call = GROUP_CALLS.get(message.chat.id)
     if group_call:
         await group_call.stop()
+        await message.reply_text(f'✋ Stopped Streaming')
 
     process = FFMPEG_PROCESSES.get(message.chat.id)
     if process:
