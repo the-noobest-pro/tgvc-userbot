@@ -50,11 +50,7 @@ async def radio(client, message: Message):
     process = FFMPEG_PROCESSES.get(message.chat.id)
     if process:
         process.send_signal(signal.SIGTERM)
-    
-
-
-
-    
+       
     query = message.command[1]
 
     regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
@@ -68,15 +64,10 @@ async def radio(client, message: Message):
         station_stream_url = query
  
     process = (
-
         ffmpeg.input(station_stream_url)
-
         .output(input_filename, format='s16le', acodec='pcm_s16le', ac=2, ar='48k')
-
         .overwrite_output()
-
         .run_async()
-
     )
 
     FFMPEG_PROCESSES[message.chat.id] = process
