@@ -23,8 +23,9 @@ from pyrogram import Client, idle
 API_ID = int(environ["API_ID"])
 API_HASH = environ["API_HASH"]
 SESSION_NAME = environ["SESSION_NAME"]
+RADIO = environ["RADIO", "False"]
 
-if bool(environ["RADIO", True]):
+if ["RADIO", "True"]:
     PLUGINS = dict(
         root="plugins",
         include=[
