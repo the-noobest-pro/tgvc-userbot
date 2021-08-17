@@ -15,6 +15,8 @@ from youtube_dl import YoutubeDL
 from pytgcalls import GroupCall 
 
 
+# Special Thanks to AsmSafone for the YTDL filter.
+
 # Commands available only for owner and contacts
 
 self_or_contact_filter = filters.create(
