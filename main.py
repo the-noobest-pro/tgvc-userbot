@@ -29,8 +29,7 @@ PLUGINS = dict(
     include=[
         "vc." + environ["PLUGIN"],
         "ping",
-        "sysinfo",
-        "stream"
+        "sysinfo"
     ]
 )
 
