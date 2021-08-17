@@ -235,7 +235,7 @@ async def play_track(client, m: Message):
     & current_vc
     & (filters.regex("^(\\/|!)playfrom"))
 )
-async def play_track(client, m: Message):
+async def dest_track(client, m: Message):
     group_call = mp.group_call
     playlist = mp.playlist
     e3 = await m.reply_text("`Processing ...`")
