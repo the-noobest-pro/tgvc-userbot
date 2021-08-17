@@ -320,7 +320,7 @@ async def show_current_playing_time(_, m: Message):
                    & (self_or_contact_filter | current_vc)
                    & filters.regex("^(\\/|!)help$"))
 async def show_help(_, m: Message):
-    await m.reply_text("https://telegra.ph/Live-Radio-Stream-Links-05-17", disable_web_page_preview=True)
+    await m.reply_text(f'[Click Here for Help!](https://telegra.ph/TGVC-UserBot-Help-08-17)', disable_web_page_preview=True)
 
 @Client.on_message(main_filter
                    & self_or_contact_filter
