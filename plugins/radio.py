@@ -47,6 +47,14 @@ async def radio(client, message: Message):
         await message.reply_text('You forgot to enter a Stream URL')
         return    
     
+    process = FFMPEG_PROCESSES.get(message.chat.id)
+    if process:
+        process.send_signal(signal.SIGTERM)
+    
+
+
+
+    
     query = message.command[1]
 
     regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
@@ -59,17 +67,17 @@ async def radio(client, message: Message):
     else:
         station_stream_url = query
  
-    ffmpeg_log = open("ffmpeg.log", "w+")
-    command = [
-       "ffmpeg", "-y", "-i", station_stream_url, "-f", "s16le", "-ac", "2",
-       "-ar", "48000", "-acodec", "pcm_s16le", group_call.input_filename
-       ]
+    process = (
 
-    process = await asyncio.create_subprocess_exec(
-        *command,
-        stdout=ffmpeg_log,
-        stderr=asyncio.subprocess.STDOUT,
-        )
+        ffmpeg.input(station_stream_url)
+
+        .output(input_filename, format='s16le', acodec='pcm_s16le', ac=2, ar='48k')
+
+        .overwrite_output()
+
+        .run_async()
+
+    )
 
     FFMPEG_PROCESSES[message.chat.id] = process
     await message.reply_text(f'📻 Radio is Starting...')
