@@ -78,11 +78,14 @@ async def radio(client, message: Message):
 
 @Client.on_message(self_or_contact_filter & filters.command('stopradio', prefixes='!'))
 async def stopradio(_, message: Message):
+    process = FFMPEG_PROCESSES.get(message.chat.id)
+    if process:
+        process.send_signal(signal.SIGTERM)
+        await asyncio.sleep(2)
+
     group_call = GROUP_CALLS.get(message.chat.id)
     if group_call:
         await group_call.stop()
         await message.reply_text(f'✋ Stopped Streaming')
 
-    process = FFMPEG_PROCESSES.get(message.chat.id)
-    if process:
-        process.send_signal(signal.SIGTERM)
+  
