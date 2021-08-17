@@ -568,8 +568,9 @@ async def stopradio(_, message: Message):
 
     radio_call = GROUP_CALLS.get(message.chat.id)
     if radio_call:
+        os.remove(input_filename)
+        await asyncio.sleep(2)
         await radio_call.stop()
-        await asyncio.sleep(1)
         await message.reply_text(f'✋ Stopped Streaming')
 
 
