@@ -24,7 +24,7 @@ GROUP_CALLS = {}
 FFMPEG_PROCESSES = {}
 
 ydl_opts = {
-    "geo-bypass": True,
+    "geo_bypass": True,
     "nocheckcertificate": True
     }
 ydl = YoutubeDL(ydl_opts)
