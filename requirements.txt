@@ -5,4 +5,3 @@ Pyrogram
 pytgcalls==0.0.23
 wheel
 youtube_dl
-
