@@ -1,4 +1,4 @@
-import signal
+import os
 import re
 import subprocess
 
@@ -7,6 +7,7 @@ import ffmpeg
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
+from signal import SIGINT
 from youtube_dl import YoutubeDL
 from pytgcalls import GroupCall 
 
@@ -35,10 +36,10 @@ ydl = YoutubeDL(ydl_opts)
 async def stream(client, message: Message):
     input_filename = f'radio-{message.chat.id}.raw'
 
-    group_call = GROUP_CALLS.get(message.chat.id)
-    if group_call is None:
-        group_call = GroupCall(client, input_filename, path_to_log_file='')
-        GROUP_CALLS[message.chat.id] = group_call
+    radio_call = GROUP_CALLS.get(message.chat.id)
+    if radio_call is None:
+        radio_call = GroupCall(client, input_filename, path_to_log_file='')
+        GROUP_CALLS[message.chat.id] = radio_call
 
     if len(message.command) < 2:
         await message.reply_text('You forgot to enter a Stream URL')
@@ -70,25 +71,37 @@ async def stream(client, message: Message):
     )
 
     FFMPEG_PROCESSES[message.chat.id] = process
+    radio_call.input_filename = f'radio-{message.chat.id}.raw'
     chat_id = message.chat.id
     radiostrt = await message.reply_text(f'📻 Radio is Starting...')
     await asyncio.sleep(3)
     await radiostrt.edit(f'📻 Started **[Live Streaming]({query})** in `{chat_id}`', disable_web_page_preview=True)
-    await group_call.start(message.chat.id)
+    await radio_call.start(message.chat.id)
 
 
 @Client.on_message(self_or_contact_filter & filters.command('end', prefixes='!'))
-async def stopradio(_, message: Message):
+async def stopradio(_, message: Message):   
+    smsg = await message.reply_text(f'⏱️ Stopping...')
+    radio_call = GROUP_CALLS.get(message.chat.id)
+    if radio_call:
+        radio_call.input_filename = ''
+
     process = FFMPEG_PROCESSES.get(message.chat.id)
     if process:
-        process.send_signal(signal.SIGTERM)
-        await asyncio.sleep(2)
+        try:
+            process.send_signal(SIGINT)
+            await asyncio.sleep(4)
+        except Exception as e:
+            print(e)
+        await smsg.edit(f'**⏹ Stopped Streaming!** \n\nNow kindly send `!leave` to leave VC')
 
-    group_call = GROUP_CALLS.get(message.chat.id)
-    if group_call:
-        await group_call.stop()
-        await message.reply_text(f'⏹ Stopped Streaming')
 
+@Client.on_message(self_or_contact_filter & filters.command('leave', prefixes='!'))
+async def leaveradio(_, message: Message):
+    radio_call = GROUP_CALLS.get(message.chat.id)
+    if radio_call:
+        await radio_call.stop()
+        await message.reply_text(f'✔️ Left the Voice Chat')
 
 @Client.on_message(self_or_contact_filter & filters.command('radio', prefixes='!'))
 async def show_radio_help(_, m: Message):
