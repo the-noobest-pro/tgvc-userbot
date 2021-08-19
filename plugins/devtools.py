@@ -12,7 +12,7 @@ self_or_contact_filter = filters.create(
 )
 
 @Client.on_message(self_or_contact_filter & filters.command('eval', prefixes='!'))
-async def evalpy(event):
+async def evalpy(client, event: Message):
     if len(event.text) > 5:
         if not event.text[5] == " ":
             return
