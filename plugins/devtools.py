@@ -145,50 +145,33 @@ def spacebin(text, ext="txt"):
             "link": f"https://spaceb.in/{key}",
             "raw": f"{spaceb}{key}/raw",
         }
-    except Exception as ex:
-        return f"#Error : {r.get('error')}"
+    except Exception as e:
+        return f"{e}"
     
-async def kontent(file, ext="txt"):
-    if not file.media:
-        return "#Error : Not a File"
-    try:
-        dl_ = await file.download_media()
-        try:
-            ext = file.file.ext.replace('.', '')
-        except Exception:
-            ext = "txt"
-        data = ''
-        with open(dl_) as f:
-            data = f.read()
-            f.close()
-    except Exception as ex:
-        return "#Error : While Reading the file!"
-    finally:
-        from os import remove
-        remove(dl_)
 
-    return ext, data
+DOWNLOAD_DIR = "/app/pastebin/"
         
 @Client.on_message(self_or_contact_filter & filters.command('paste', prefixes='!'))
 async def pastebin(client, message: Message):
     huehue = await message.reply_text("`...`")
-    try:
-        reply = message.reply_to_message
-        if reply.media:
-            data = await kontent(reply)
-            if isinstance(data, tuple):
-                text = data[1]
-                ext = data[0]
-            else:
-                return
-        else:
-            text = reply
-            ext = "txt"
-    except Exception as e:
+    text = message.text.split(" ", maxsplit=1)[1]
+    replied = message.reply_to_message
+    file_type = None
+    if not text and replied and replied.document:
+        file_type = os.path.splitext(replied.document.file_name)[1].lstrip('.')
+        path = await replied.download(DOWNLOAD_DIR)
+        async with aiofiles.open(path, 'r') as d_f:
+            text = await d_f.read()
+        os.remove(path)
+    elif not text and replied and replied.text:
+        text = replied.text
+        file_type = "txt"
+    if not text:
         await huehue.edit("`Reply to a File or Message`")
-        print(e)
+        return
+
     
-    _paste = spacebin(text, ext)
+    _paste = spacebin(text, file_type)
     
     if isinstance(_paste, dict):
         c1m = f"<b>Pasted to <a href='{_paste['link']}'>{_paste['bin']}</a> "\
