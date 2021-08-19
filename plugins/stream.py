@@ -35,6 +35,7 @@ ydl = YoutubeDL(ydl_opts)
 @Client.on_message(self_or_contact_filter & filters.command('stream', prefixes='!'))
 async def stream(client, message: Message):
     input_filename = f'radio-{message.chat.id}.raw'
+    radiostrt = await message.reply_text("`...`")
 
     radio_call = GROUP_CALLS.get(message.chat.id)
     if radio_call is None:
@@ -53,7 +54,6 @@ async def stream(client, message: Message):
         return   
 
     query = message.command[1]
-
     regex = r"^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+"
     match = re.match(regex,query)
     if match:
@@ -80,7 +80,7 @@ async def stream(client, message: Message):
     FFMPEG_PROCESSES[message.chat.id] = process
     radio_call.input_filename = f'radio-{message.chat.id}.raw'
     chat_id = message.chat.id
-    radiostrt = await message.reply_text(f'📻 Radio is Starting...')
+    await radiostrt.edit(f'`📻 Radio is Starting...`')
     await asyncio.sleep(3)
     await radiostrt.edit(f'📻 Started **[Live Streaming]({query})** in `{chat_id}`', disable_web_page_preview=True)
     await radio_call.start(message.chat.id)
