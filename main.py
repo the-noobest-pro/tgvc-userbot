@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 from os import environ
 
-import logging
+# import logging
 from pyrogram import Client, idle
 
 API_ID = int(environ["API_ID"])
@@ -36,7 +36,7 @@ PLUGINS = dict(
 )
 
 app = Client(SESSION_NAME, API_ID, API_HASH, plugins=PLUGINS)
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 app.start()
 print('>>> USERBOT STARTED')
 idle()
