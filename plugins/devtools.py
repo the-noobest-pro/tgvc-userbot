@@ -2,7 +2,6 @@
 # PORTED BASH FROM TeamUltroid/Ultroid
 
 import traceback
-import aiohttp
 import aiofiles
 import json
 import sys
@@ -12,7 +11,6 @@ import re
 import subprocess
 import io
 import asyncio
-from urllib.parse import urlparse
 from io import StringIO
 from pyrogram import Client, filters
 from pyrogram.types import Message
@@ -125,8 +123,6 @@ async def terminal(client, m: Message):
         
         
 
-# Thanks to Avish peru for making Dogbin clone!
-dog_ = "https://dogbin.up.railway.app/"
 spaceb = "https://spaceb.in/api/v1/documents/"
 
 def spacebin(text, ext="txt"):
@@ -148,11 +144,11 @@ def spacebin(text, ext="txt"):
         }
     except Exception as e:
         return f"{e}"
+        print (e)
     
-
 DOWNLOAD_DIR = "/app/pastebin/"
         
-@Client.on_message(self_or_contact_filter & filters.command('paste', prefixes='!'))
+@Client.on_message(filters.command('paste', prefixes='!'))
 async def pastebin(client, message: Message):
     huehue = await message.reply_text("`...`")
     replied = message.reply_to_message
@@ -167,16 +163,19 @@ async def pastebin(client, message: Message):
         text = replied.text
         file_type = "txt"
     if not replied:
-        await huehue.edit("`Reply to a File or Message`")
-        return
-
+        try:
+            text = message.text.split(" ", maxsplit=1)[1]
+            file_type = "txt"
+        except Exception as e:
+            await huehue.edit("`Give me Something to Paste 🙄`")
+            return
     
     _paste = spacebin(text, file_type)
     
     if isinstance(_paste, dict):
         c1m = f"<b>Pasted to <a href='{_paste['link']}'>{_paste['bin']}</a> "\
         f"| <a href='{_paste['raw']}'>Raw</a></b>"
-        await huehue.edit(c1m, parse_mode="html")
+        await huehue.edit(c1m, parse_mode="html", disable_web_page_preview=True)
     else:
         return
     
