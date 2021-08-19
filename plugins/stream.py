@@ -45,7 +45,7 @@ async def stream(client, message: Message):
     if process:
         try:
             process.send_signal(SIGINT)
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
         except Exception as e:
             print(e)
 
