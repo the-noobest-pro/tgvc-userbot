@@ -6,6 +6,7 @@ import os
 import re
 import subprocess
 import io
+import asyncio
 from io import StringIO
 from pyrogram import Client, filters
 from pyrogram.types import Message
@@ -87,7 +88,11 @@ async def terminal(client, m: Message):
     except IndexError:
         return await shtxt.edit("`No cmd given`")
     
-    stdout, stderr = await bash(cmd)
+    process = await asyncio.create_subprocess_shell(
+        cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+    )
+    stdout, stderr = await process.communicate()
+    
     OUT = f"**☞ BASH\n\n• COMMAND:**\n`{cmd}` \n\n"
     if stderr:
         OUT += f"**• ERROR:** \n`{stderr}`\n\n"
