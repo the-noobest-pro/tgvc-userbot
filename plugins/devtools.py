@@ -3,6 +3,7 @@
 
 import traceback
 import aiohttp
+import aiofiles
 import json
 import sys
 import os
@@ -154,7 +155,7 @@ DOWNLOAD_DIR = "/app/pastebin/"
 @Client.on_message(self_or_contact_filter & filters.command('paste', prefixes='!'))
 async def pastebin(client, message: Message):
     huehue = await message.reply_text("`...`")
-    text = message.text.split(" ", maxsplit=1)[1]
+    text = message.filtered_input_str
     replied = message.reply_to_message
     file_type = None
     if not text and replied and replied.document:
