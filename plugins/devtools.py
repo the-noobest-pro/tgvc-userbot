@@ -182,7 +182,7 @@ async def pastebin(client, message: Message):
             else:
                 return
         else:
-            text = reply.message
+            text = reply
     except Exception as e:
         await huehue.edit("`Reply to a File or Message`")
         print(e)
