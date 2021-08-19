@@ -8,8 +8,7 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y ffmpeg opus-tools bpm-tools
 RUN python -m pip install --upgrade pip
 RUN python -m pip install wheel Pyrogram TgCrypto
-RUN python -m pip install pytgcalls==0.0.23 ffmpeg-python psutil youtube_dl
-
+RUN python -m pip install pytgcalls==0.0.23 ffmpeg-python psutil youtube_dl requests aiofiles aiohttp
 COPY . /app
 RUN chmod 777 /app
 WORKDIR /app
