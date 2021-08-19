@@ -24,11 +24,11 @@ async def aexec(code, client, message):
     return await locals()["__aexec"](client, message)
 
 p = print
-m = message 
 
 @Client.on_message(self_or_contact_filter & filters.command('eval', prefixes='!'))
-async def evaluate(client, message: Message):
-    
+async def evaluate(client, m: Message):
+   
+    message = m: Message
     status_message = await message.reply_text("`Running ...`")
     try:
         cmd = message.text.split(" ", maxsplit=1)[1]
