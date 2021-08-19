@@ -123,90 +123,74 @@ async def terminal(client, m: Message):
         
         
 
-TMP_DOWNLOAD_DIRECTORY = "/app/pastebin/"        
+# Thanks to Avish peru for making Dogbin clone!
+dog_ = "https://dogbin.up.railway.app/"
+spaceb = "https://spaceb.in/api/v1/documents/"
+
+def spacebin(text, ext="txt"):
+    try:
+        request = requests.post(
+            spaceb, 
+            data={
+                "content": text.encode("UTF-8"),
+                "extension": ext,
+            },
+        )
+        r = request.json()
+        key = r.get('payload').get('id')
+        return {
+            "bin": "SpaceBin",
+            "id": key,
+            "link": f"https://spaceb.in/{key}",
+            "raw": f"{spaceb}{key}/raw",
+        }
+    except Exception as ex:
+        return f"#Error : {r.get('error')}"
+    
+async def kontent(file, ext="txt"):
+    if not file.media:
+        return "#Error : Not a File"
+    try:
+        dl_ = await file.download_media()
+        try:
+            ext = file.file.ext.replace('.', '')
+        except Exception:
+            ext = "txt"
+        data = ''
+        with open(dl_) as f:
+            data = f.read()
+            f.close()
+    except Exception as ex:
+        return "#Error : While Reading the file!"
+    finally:
+        from os import remove
+        remove(dl_)
+
+    return ext, data
         
 @Client.on_message(self_or_contact_filter & filters.command('paste', prefixes='!'))
 async def pastebin(client, message: Message):
     huehue = await message.reply_text("`...`")
-    downloaded_file_name = None
-
-    if message.reply_to_message and message.reply_to_message.media:
-        downloaded_file_name_res = await message.reply_to_message.download(
-            file_name=TMP_DOWNLOAD_DIRECTORY
-        )
-        m_list = None
-        with open(downloaded_file_name_res, "rb") as fd:
-            m_list = fd.readlines()
-        downloaded_file_name = ""
-        for m in m_list:
-            downloaded_file_name += m.decode("UTF-8")
-        os.remove(downloaded_file_name_res)
-    elif message.reply_to_message:
-        downloaded_file_name = message.reply_to_message.text.html
-    # elif len(message.command) > 1:
-    #     downloaded_file_name = " ".join(message.command[1:])
+    try:
+        reply = message.reply_to_message
+        if reply.media:
+            data = await kontent(reply)
+            if isinstance(data, tuple):
+                text = data[1]
+                ext = data[0]
+            else:
+                return
+        else:
+            text = reply.message
+    except Exception as e:
+        await huehue.edit("`Reply to a File or Message`")
+    
+    _paste = spacebin(text, ext)
+    
+    if isinstance(_paste, dict):
+        c1m = f"<b>Pasted to <a href='{_paste['link']}'>{_paste['bin']}</a> "\
+        f"| <a href='{_paste['raw']}'>Raw</a></b>"
+        await huehue.edit(c1m, parse_mode="html")
     else:
-        await huehue.edit("`Reply to a File or Text`")
         return
-
-    if downloaded_file_name is None:
-        await huehue.edit("`Reply to a File or Text`")
-        return
-
-    json_paste_data = {
-        "content": downloaded_file_name
-    }
-
-    # a dictionary to store different pastebin URIs
-    paste_bin_store_s = {
-        "deldog": "https://dogbin.up.railway.app",
-        "nekobin": "https://nekobin.com/api/documents"
-    }
-
-    chosen_store = "nekobin"
-    if len(message.command) == 2:
-        chosen_store = message.command[1]
-
-    # get the required pastebin URI
-    paste_store_url = paste_bin_store_s.get(
-        chosen_store,
-        paste_bin_store_s["nekobin"]
-    )
-    paste_store_base_url_rp = urlparse(paste_store_url)
-
-    # the pastebin sites, respond with only the "key"
-    # we need to prepend the BASE_URL of the appropriate site
-    paste_store_base_url = paste_store_base_url_rp.scheme + "://" + \
-        paste_store_base_url_rp.netloc
-
-    async with aiohttp.ClientSession() as session:
-        response_d = await session.post(paste_store_url, json=json_paste_data)
-        response_jn = await response_d.json()
-
-    # we got the response from a specific site,
-    # this dictionary needs to be scrapped
-    # using bleck megick to find the "key"
-    t_w_attempt = bleck_megick(response_jn)
-    required_url = json.dumps(
-        t_w_attempt, sort_keys=True, indent=4
-    ) + "\n\n #ERROR"
-    if t_w_attempt is not None:
-        required_url = "**Patsted to Nekobin**\n" + paste_store_base_url + "/" + "Raw" + "/" + t_w_attempt
-
-    await huehue.edit(required_url)
-
-
-def bleck_megick(dict_rspns):
-    # first, try getting "key", dirctly
-    first_key_r = dict_rspns.get("key")
-    # this is for the "del.dog" site
-    if first_key_r is not None:
-        return first_key_r
-    check_if_result_ests = dict_rspns.get("result")
-    if check_if_result_ests is not None:
-        # this is for the "nekobin.com" site
-        second_key_a = check_if_result_ests.get("key")
-        if second_key_a is not None:
-            return second_key_a
-    # TODO: is there a better way?
-    return None
+    
