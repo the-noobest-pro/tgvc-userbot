@@ -2,12 +2,15 @@
 # PORTED BASH FROM TeamUltroid/Ultroid
 
 import traceback
+import aiohttp
+import json
 import sys
 import os
 import re
 import subprocess
 import io
 import asyncio
+from urllib.parse import urlparse
 from io import StringIO
 from pyrogram import Client, filters
 from pyrogram.types import Message
@@ -117,3 +120,93 @@ async def terminal(client, m: Message):
             await shtxt.delete()
     else:
         await shtxt.edit(OUT)
+        
+        
+
+TMP_DOWNLOAD_DIRECTORY = "/app/pastebin/"        
+        
+@Client.on_message(self_or_contact_filter & filters.command('paste', prefixes='!'))
+async def pastebin(client, message: Message):
+    huehue = await message.reply_text("`...`")
+    downloaded_file_name = None
+
+    if message.reply_to_message and message.reply_to_message.media:
+        downloaded_file_name_res = await message.reply_to_message.download(
+            file_name=TMP_DOWNLOAD_DIRECTORY
+        )
+        m_list = None
+        with open(downloaded_file_name_res, "rb") as fd:
+            m_list = fd.readlines()
+        downloaded_file_name = ""
+        for m in m_list:
+            downloaded_file_name += m.decode("UTF-8")
+        os.remove(downloaded_file_name_res)
+    elif message.reply_to_message:
+        downloaded_file_name = message.reply_to_message.text.html
+    # elif len(message.command) > 1:
+    #     downloaded_file_name = " ".join(message.command[1:])
+    else:
+        await huehue.edit("`Reply to a File or Text`")
+        return
+
+    if downloaded_file_name is None:
+        await huehue.edit("`Reply to a File or Text`")
+        return
+
+    json_paste_data = {
+        "content": downloaded_file_name
+    }
+
+    # a dictionary to store different pastebin URIs
+    paste_bin_store_s = {
+        "deldog": "https://dogbin.up.railway.app",
+        "nekobin": "https://nekobin.com/api/documents"
+    }
+
+    chosen_store = "nekobin"
+    if len(message.command) == 2:
+        chosen_store = message.command[1]
+
+    # get the required pastebin URI
+    paste_store_url = paste_bin_store_s.get(
+        chosen_store,
+        paste_bin_store_s["nekobin"]
+    )
+    paste_store_base_url_rp = urlparse(paste_store_url)
+
+    # the pastebin sites, respond with only the "key"
+    # we need to prepend the BASE_URL of the appropriate site
+    paste_store_base_url = paste_store_base_url_rp.scheme + "://" + \
+        paste_store_base_url_rp.netloc
+
+    async with aiohttp.ClientSession() as session:
+        response_d = await session.post(paste_store_url, json=json_paste_data)
+        response_jn = await response_d.json()
+
+    # we got the response from a specific site,
+    # this dictionary needs to be scrapped
+    # using bleck megick to find the "key"
+    t_w_attempt = bleck_megick(response_jn)
+    required_url = json.dumps(
+        t_w_attempt, sort_keys=True, indent=4
+    ) + "\n\n #ERROR"
+    if t_w_attempt is not None:
+        required_url = "**Patsted to Nekobin**\n" + paste_store_base_url + "/" + "Raw" + "/" + t_w_attempt
+
+    await huehue.edit(required_url)
+
+
+def bleck_megick(dict_rspns):
+    # first, try getting "key", dirctly
+    first_key_r = dict_rspns.get("key")
+    # this is for the "del.dog" site
+    if first_key_r is not None:
+        return first_key_r
+    check_if_result_ests = dict_rspns.get("result")
+    if check_if_result_ests is not None:
+        # this is for the "nekobin.com" site
+        second_key_a = check_if_result_ests.get("key")
+        if second_key_a is not None:
+            return second_key_a
+    # TODO: is there a better way?
+    return None
