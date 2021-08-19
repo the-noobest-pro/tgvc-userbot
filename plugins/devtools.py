@@ -185,6 +185,7 @@ async def pastebin(client, message: Message):
             text = reply.message
     except Exception as e:
         await huehue.edit("`Reply to a File or Message`")
+        print(e)
     
     _paste = spacebin(text, ext)
     
