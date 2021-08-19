@@ -21,7 +21,6 @@ async def aexec(code, client, m):
         f"async def __aexec(client, m): "
         + "".join(f"\n {l}" for l in code.split("\n"))
     )
-    message = m
     return await locals()["__aexec"](client, m)
 
 p = print
@@ -77,4 +76,67 @@ async def evaluate(client, m: Message):
         await status_message.edit(final_output)
         
         
-        
+p = print
+
+@Client.on_message(self_or_contact_filter & filters.command('bash', prefixes='!'))
+async def terminal(client, message: Message):
+    if len(message.text.split()) == 1:
+        await message.reply_text(f"Usage: `!bash echo owo`")
+        return
+    args = message.text.split(None, 1)
+    teks = args[1]
+    if "\n" in teks:
+        code = teks.split("\n")
+        output = ""
+        for x in code:
+            shell = re.split(""" (?=(?:[^'"]|'[^']*'|"[^"]*")*$)""", x)
+            try:
+                process = subprocess.Popen(
+                    shell, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                )
+            except Exception as err:
+                print(err)
+                await message.reply_text(
+                    """
+**Error:**
+```{}```
+""".format(
+                        err
+                    )
+                )
+            output += "**{}**\n".format(code)
+            output += process.stdout.read()[:-1].decode("utf-8")
+            output += "\n"
+    else:
+        shell = re.split(""" (?=(?:[^'"]|'[^']*'|"[^"]*")*$)""", teks)
+        for a in range(len(shell)):
+            shell[a] = shell[a].replace('"', "")
+        try:
+            process = subprocess.Popen(
+                shell, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+        except Exception as err:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            errors = traceback.format_exception(
+                etype=exc_type, value=exc_obj, tb=exc_tb
+            )
+            await message.reply_text("""**Error:**\n```{}```""".format("".join(errors)))
+            return
+        output = process.stdout.read()[:-1].decode("utf-8")
+    if str(output) == "\n":
+        output = None
+    if output:
+        if len(output) > 0:
+            with open("output.txt", "w+") as file:
+                file.write(output)
+            await client.send_document(
+                message.chat.id,
+                "output.txt",
+                reply_to_message_id=message.message_id,
+                caption="`Output file`",
+            )
+            os.remove("output.txt")
+            return
+        await message.reply_text(f"**Output:**\n```{output}```", parse_mode="markdown")
+    else:
+        await message.reply_text("**Output:**\n`No Output`")
