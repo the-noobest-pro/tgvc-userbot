@@ -40,6 +40,13 @@ async def stream(client, message: Message):
     if radio_call is None:
         radio_call = GroupCall(client, input_filename, path_to_log_file='')
         GROUP_CALLS[message.chat.id] = radio_call
+    process = FFMPEG_PROCESSES.get(message.chat.id)
+    if process:
+        try:
+            process.send_signal(SIGINT)
+            await asyncio.sleep(3)
+        except Exception as e:
+            print(e)
 
     if len(message.command) < 2:
         await message.reply_text('You forgot to enter a Stream URL')
@@ -90,7 +97,7 @@ async def stopradio(_, message: Message):
     if process:
         try:
             process.send_signal(SIGINT)
-            await asyncio.sleep(4)
+            await asyncio.sleep(3)
         except Exception as e:
             print(e)
         await smsg.edit(f'**⏹ Stopped Streaming!** \n\nNow kindly send `!quit` to leave VC')
