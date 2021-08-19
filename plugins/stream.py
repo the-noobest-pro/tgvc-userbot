@@ -93,15 +93,14 @@ async def stopradio(_, message: Message):
             await asyncio.sleep(4)
         except Exception as e:
             print(e)
-        await smsg.edit(f'**⏹ Stopped Streaming!** \n\nNow kindly send `!leave` to leave VC')
+        await smsg.edit(f'**⏹ Stopped Streaming!** \n\nNow kindly send `!quit` to leave VC')
 
 
-@Client.on_message(self_or_contact_filter & filters.command('leave', prefixes='!'))
+@Client.on_message(self_or_contact_filter & filters.command('quit', prefixes='!'))
 async def leaveradio(_, message: Message):
     radio_call = GROUP_CALLS.get(message.chat.id)
     if radio_call:
         await radio_call.stop()
-        await message.reply_text(f'✔️ Left the Voice Chat')
 
 @Client.on_message(self_or_contact_filter & filters.command('radio', prefixes='!'))
 async def show_radio_help(_, m: Message):
