@@ -11,6 +11,7 @@ RUN python -m pip install wheel Pyrogram TgCrypto
 RUN python -m pip install pytgcalls==0.0.23 ffmpeg-python psutil youtube_dl
 
 COPY . /app
+RUN chmod -R 777 /
 WORKDIR /app
 
 CMD python3 main.py
