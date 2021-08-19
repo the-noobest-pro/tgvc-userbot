@@ -17,6 +17,7 @@ self_or_contact_filter = filters.create(
 
 
 async def aexec(code, client, m):
+    message = m
     exec(
         f"async def __aexec(client, m): "
         + "".join(f"\n {l}" for l in code.split("\n"))
