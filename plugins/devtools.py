@@ -16,12 +16,12 @@ self_or_contact_filter = filters.create(
 )
 
 
-async def aexec(code, client, message):
+async def aexec(code, client, m):
     exec(
-        f"async def __aexec(client, message): "
+        f"async def __aexec(client, m): "
         + "".join(f"\n {l}" for l in code.split("\n"))
     )
-    return await locals()["__aexec"](client, message)
+    return await locals()["__aexec"](client, m)
 
 p = print
 
