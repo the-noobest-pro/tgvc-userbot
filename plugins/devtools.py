@@ -155,19 +155,18 @@ DOWNLOAD_DIR = "/app/pastebin/"
 @Client.on_message(self_or_contact_filter & filters.command('paste', prefixes='!'))
 async def pastebin(client, message: Message):
     huehue = await message.reply_text("`...`")
-    text = message.filtered_input_str
     replied = message.reply_to_message
     file_type = None
-    if not text and replied and replied.document:
+    if replied and replied.document:
         file_type = os.path.splitext(replied.document.file_name)[1].lstrip('.')
         path = await replied.download(DOWNLOAD_DIR)
         async with aiofiles.open(path, 'r') as d_f:
             text = await d_f.read()
         os.remove(path)
-    elif not text and replied and replied.text:
+    elif replied and replied.text:
         text = replied.text
         file_type = "txt"
-    if not text:
+    if not replied:
         await huehue.edit("`Reply to a File or Message`")
         return
 
