@@ -27,24 +27,23 @@ p = print
 
 @Client.on_message(self_or_contact_filter & filters.command('eval', prefixes='!'))
 async def evaluate(client, m: Message):
-   
-    message = m: Message
-    status_message = await message.reply_text("`Running ...`")
+
+    status_message = await m.reply_text("`Running ...`")
     try:
-        cmd = message.text.split(" ", maxsplit=1)[1]
+        cmd = m.text.split(" ", maxsplit=1)[1]
     except IndexError:
         await status_message.delete()
         return
-    reply_to_id = message.message_id
-    if message.reply_to_message:
-        reply_to_id = message.reply_to_message.message_id
+    reply_to_id = m.message_id
+    if m.reply_to_message:
+        reply_to_id = m.reply_to_message.message_id
     old_stderr = sys.stderr
     old_stdout = sys.stdout
     redirected_output = sys.stdout = StringIO()
     redirected_error = sys.stderr = StringIO()
     stdout, stderr, exc = None, None, None
     try:
-        await aexec(cmd, client, message)
+        await aexec(cmd, client, m)
     except Exception:
         exc = traceback.format_exc()
     stdout = redirected_output.getvalue()
@@ -65,7 +64,7 @@ async def evaluate(client, m: Message):
         filename = "output.txt"
         with open(filename, "w+", encoding="utf8") as out_file:
             out_file.write(str(final_output))
-        await message.reply_document(
+        await m.reply_document(
             document=filename,
             caption="Pyrogram Eval",
             disable_notification=True,
