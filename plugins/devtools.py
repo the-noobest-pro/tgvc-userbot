@@ -1,4 +1,5 @@
-# PORTED FROM TheCodents/DevelopersUserbot
+# PORTED EVAL FROM TheCodents/DevelopersUserbot
+# PORTED BASH FROM TeamUltroid/Ultroid
 
 import traceback
 import sys
@@ -97,20 +98,19 @@ async def terminal(client, m: Message):
     e = stderr.decode()
     if e:
         OUT += f"**• ERROR:** \n`{e}`\n\n"
-    o = stdout.decode()
-    if o:
-        _o = o.split("\n")
+    t = stdout.decode()
+    if t:
+        _o = t.split("\n")
         o = "\n".join(_o)
         OUT += f"**• OUTPUT:**\n`{o}`"
-    if not e and not o:
+    if not e and not t:
         OUT += f"**• OUTPUT:**\n`Success`"
     if len(OUT) > 4096:
         ultd = OUT.replace("`", "").replace("*", "").replace("_", "")
         with io.BytesIO(str.encode(ultd)) as out_file:
             out_file.name = "bash.txt"
-            await client.send_document(
-                m.chat.id,
-                out_file,
+            await m.reply_document(
+                document=out_file,
                 caption="`Output file`",
                 reply_to_message_id=m.message_id
             )
