@@ -94,13 +94,15 @@ async def terminal(client, m: Message):
     stdout, stderr = await process.communicate()
     
     OUT = f"**☞ BASH\n\n• COMMAND:**\n`{cmd}` \n\n"
-    if stderr:
-        OUT += f"**• ERROR:** \n`{stderr}`\n\n"
-    if stdout:
-        _o = stdout.split("\n")
+    e = stderr.decode()
+    if e:
+        OUT += f"**• ERROR:** \n`{e}`\n\n"
+    o = stdout.decode()
+    if o:
+        _o = o.split("\n")
         o = "\n".join(_o)
         OUT += f"**• OUTPUT:**\n`{o}`"
-    if not stderr and not stdout:
+    if not e and not o:
         OUT += f"**• OUTPUT:**\n`Success`"
     if len(OUT) > 4096:
         ultd = OUT.replace("`", "").replace("*", "").replace("_", "")
