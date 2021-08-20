@@ -493,7 +493,6 @@ async def unmute(_, m: Message):
 
 
 @Client.on_message(main_filter
-                   & current_vc
                    & filters.regex("^(\\/|!)repo$"))
 async def show_repository(_, m: Message):
     if mp.msg.get('repo') is not None:
