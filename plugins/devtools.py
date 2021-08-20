@@ -150,9 +150,13 @@ DOWNLOAD_DIR = "/app/pastebin/"
         
 @Client.on_message(filters.command('paste', prefixes='!'))
 async def pastebin(client, message: Message):
-    huehue = await message.reply_text("`...`")
     replied = message.reply_to_message
     file_type = None
+    if replied:
+        huehue = await client.send_message(message.chat.id, "`...`", reply_to_message_id=replied.message_id)
+    else:
+        huehue = await message.reply_text("`...`")
+
     if replied and replied.document:
         file_type = os.path.splitext(replied.document.file_name)[1].lstrip('.')
         path = await replied.download(DOWNLOAD_DIR)
