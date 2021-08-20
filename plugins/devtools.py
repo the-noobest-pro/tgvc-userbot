@@ -188,22 +188,22 @@ async def pastebin(client, message: Message):
         except Exception as e:
             file_type = "txt"
         path = await replied.download(DOWNLOAD_DIR)
-        try:
-            async with aiofiles.open(path, 'r') as d_f:
-                text = await d_f.read()
-        except Exception as e:
-            await huehue.edit("`Damn! Gib Some Txt File to Paste`")
+        async with aiofiles.open(path, 'r') as d_f:
+            text = await d_f.read()                  
         os.remove(path)
     elif replied and replied.text:
         text = replied.text
         file_type = "txt"
-    if not replied:
+    elif not replied:
         try:
             text = message.text.split(" ", maxsplit=1)[1]
             file_type = "txt"
         except Exception as e:
             await huehue.edit("`Give me Something to Paste 🙄`")
             return
+    else:
+        await huehue.edit("`Damn! Gib Some Txt File to Paste`")
+
     
     _paste = spacebin(text, file_type)
     
