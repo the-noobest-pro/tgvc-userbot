@@ -214,7 +214,7 @@ async def pastebin(client, message: Message):
             if isinstance(_pastee, dict):
                 dgbin = _pastee['link']
                 draw = _pastee['raw']
-                await huehue.edit(f"__SpaceBin Down__ \n**Pasted to [DogBin]({dgbin}) \| [Raw]({draw})**", disable_web_page_preview=True)
+                await huehue.edit(f"__SpaceBin Down__ \n**Pasted to [DogBin]({dgbin}) | [Raw]({draw})**", disable_web_page_preview=True)
             else:
                 await huehue.edit(str(e))
         except Exception as ex:
