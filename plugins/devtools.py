@@ -212,8 +212,9 @@ async def pastebin(client, message: Message):
         try:
             _pastee = dogbin(text, file_type)
             if isinstance(_pastee, dict):
-                abcd = f"__SpaceBin Down. So,__ \n**Pasted to [{_pastee['bin']}]({_pastee['link']}) | [Raw]({_pastee['raw']})**")
-                await huehue.edit(abcd, disable_web_page_preview=True)
+                abcd = f"<i>SpaceBin Down. So,</i><br><b>Pasted to <a href='{_pastee['link']}'>{_pastee['bin']}</a> "\
+                f"| <a href='{_pastee['raw']}'>Raw</a></b>"
+                await huehue.edit(abcd, parse_mode="html", disable_web_page_preview=True)
             else:
                 await huehue.edit(str(e))
         except Exception as ex:
