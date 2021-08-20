@@ -122,7 +122,8 @@ async def terminal(client, m: Message):
         await shtxt.edit(OUT)
         
         
-
+# Thanks to Avish peru for making Dogbin clone!
+dog_ = "https://dogbin.up.railway.app/"
 spaceb = "https://spaceb.in/api/v1/documents/"
 
 def spacebin(text, ext="txt"):
@@ -144,7 +145,31 @@ def spacebin(text, ext="txt"):
         }
     except Exception as e:
         return str(e)
-        print (e)
+        print(e)
+
+def dogbin(text, ext="txt"):
+    url = f"{dog_}documents"
+    try:
+        request = requests.post(
+            url=url,
+            data=json.dumps({"content": text}),
+            headers={"content-type": "application/json"},
+        )
+        r = request.json()
+        key = r.get("key")
+        dogg = (
+            f"{dog_}v/{key}" if r.get("isUrl") else f"{dog_}{key}"
+        )
+        raw = f"{dog_}raw/{key}"
+        return {
+            "bin": "DogBin",
+            "id": key,
+            "link": f"{dogg}.{ext}",
+            "raw": raw,
+        }
+    except Exception as e:
+        return str(e)
+        print(e)
     
 DOWNLOAD_DIR = "/app/pastebin/"
         
@@ -179,14 +204,20 @@ async def pastebin(client, message: Message):
     
     _paste = spacebin(text, file_type)
     
-    if isinstance(_paste, dict):
+    if isinstance(_paste, dict) and _paste['id'] != "None":
         c1m = f"<b>Pasted to <a href='{_paste['link']}'>{_paste['bin']}</a> "\
         f"| <a href='{_paste['raw']}'>Raw</a></b>"
         await huehue.edit(c1m, parse_mode="html", disable_web_page_preview=True)
     else:
-        await huehue.edit(str(_paste))
-        return
-
+        try:
+            _pastee = dogbin(text, file_type)
+            if isinstance(_pastee, dict):
+                abcd = f"__SpaceBin Down. So,__ \n**Pasted to [{_pastee['bin']}]({_pastee['link']}) | [Raw]({_pastee['raw']})**")
+                await huehue.edit(abcd, disable_web_page_preview=True)
+            else:
+                await huehue.edit(str(e))
+        except Exception as ex:
+            await huehue.edit(str(ex))
 
 @Client.on_message(filters.command('id', prefixes='!'))
 async def msgid(client, message: Message):
