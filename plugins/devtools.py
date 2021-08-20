@@ -199,8 +199,8 @@ async def msgid(client, message: Message):
                 bot_api_file_id = replied.audio.file_id
             if replied.voice:
                 bot_api_file_id = replied.voice.file_id
-            await client.send_message(m.chat.id, f"**Chat ID:** `{chat_id}` \n**User ID:** `{sender_id}` \n**File ID:** `{bot_api_file_id}`", reply_to_message_id=replied.message_id)
+            await client.send_message(message.chat.id, f"**Chat ID:** `{chat_id}` \n**User ID:** `{sender_id}` \n**File ID:** `{bot_api_file_id}`", reply_to_message_id=replied.message_id)
         except Exception as e:
-            await client.send_message(m.chat.id, f"**Chat ID:** `{chat_id}` \n**User ID:** `{sender_id}`", reply_to_message_id=replied.message_id)
+            await client.send_message(message.chat.id, f"**Chat ID:** `{chat_id}` \n**User ID:** `{sender_id}`", reply_to_message_id=replied.message_id)
     else:
         await message.reply_text(f"**Chat ID:** `{chat_id}`")
