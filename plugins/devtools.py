@@ -123,7 +123,7 @@ async def terminal(client, m: Message):
         
         
 
-spaceb = "https://spaceb.in/api/v1/documents/"
+spaceb = "https://nekobin.com/api/documents"
 
 def spacebin(text, ext="txt"):
     try:
@@ -139,7 +139,7 @@ def spacebin(text, ext="txt"):
         return {
             "bin": "SpaceBin",
             "id": key,
-            "link": f"https://spaceb.in/{key}",
+            "link": f"https://nekobin.com/{key}",
             "raw": f"{spaceb}{key}/raw",
         }
     except Exception as e:
@@ -151,14 +151,17 @@ DOWNLOAD_DIR = "/app/pastebin/"
 @Client.on_message(filters.command('paste', prefixes='!'))
 async def pastebin(client, message: Message):
     replied = message.reply_to_message
-    file_type = None
+    file_type = "txt"
     if replied:
         huehue = await client.send_message(message.chat.id, "`...`", reply_to_message_id=replied.message_id)
     else:
         huehue = await message.reply_text("`...`")
 
     if replied and replied.document:
-        file_type = os.path.splitext(replied.document.file_name)[1].lstrip('.')
+        try:
+            file_type = os.path.splitext(replied.document.file_name)[1].lstrip('.')
+        except Exception as e:
+            file_type = "txt"
         path = await replied.download(DOWNLOAD_DIR)
         async with aiofiles.open(path, 'r') as d_f:
             text = await d_f.read()
