@@ -135,7 +135,7 @@ def spacebin(text, ext="txt"):
             },
         )
         r = request.json()
-        key = r.get('payload').get('id')
+        key = r['result']['key']
         return {
             "bin": "SpaceBin",
             "id": key,
