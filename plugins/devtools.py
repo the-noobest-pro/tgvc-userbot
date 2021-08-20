@@ -204,7 +204,7 @@ async def pastebin(client, message: Message):
     
     _paste = spacebin(text, file_type)
     
-    if isinstance(_paste, dict) and _paste['id'] != "None":
+    if isinstance(_paste, dict) and _paste['link'] != f"https://spaceb.in/None":
         c1m = f"<b>Pasted to <a href='{_paste['link']}'>{_paste['bin']}</a> "\
         f"| <a href='{_paste['raw']}'>Raw</a></b>"
         await huehue.edit(c1m, parse_mode="html", disable_web_page_preview=True)
