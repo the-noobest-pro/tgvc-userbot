@@ -123,7 +123,7 @@ async def terminal(client, m: Message):
         
         
 
-spaceb = "https://nekobin.com/api/documents"
+spaceb = "https://spaceb.in/api/v1/documents/"
 
 def spacebin(text, ext="txt"):
     try:
@@ -135,11 +135,11 @@ def spacebin(text, ext="txt"):
             },
         )
         r = request.json()
-        key = r['result']['key']
+        key = r.get('payload').get('id')
         return {
             "bin": "SpaceBin",
             "id": key,
-            "link": f"https://nekobin.com/{key}",
+            "link": f"https://spaceb.in/{key}",
             "raw": f"{spaceb}{key}/raw",
         }
     except Exception as e:
