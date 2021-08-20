@@ -123,8 +123,8 @@ async def terminal(client, m: Message):
         
         
 # Thanks to Avish peru for making Dogbin clone!
-dog_ = "https://pulsar-production.up.railway.app/api/v1/documents"
-spaceb = "https://pulsar-production.up.railway.app/documents"
+dog_ = "https://pulsar-production.up.railway.app/api/v1/"
+spaceb = "https://pulsar-production.up.railway.app/api/v1/documents"
 
 def spacebin(text, ext="txt"):
     try:
