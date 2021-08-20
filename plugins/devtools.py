@@ -124,7 +124,7 @@ async def terminal(client, m: Message):
         
 # Thanks to Avish peru for making Dogbin clone!
 dog_ = "https://dogbin.up.railway.app/"
-spaceb = "https://spaceb.in/api/v1/documents/"
+spaceb = "https://pulsar-production.up.railway.app/"
 
 def spacebin(text, ext="txt"):
     try:
@@ -140,7 +140,7 @@ def spacebin(text, ext="txt"):
         return {
             "bin": "SpaceBin",
             "id": key,
-            "link": f"https://spaceb.in/{key}",
+            "link": f"https://pulsar-production.up.railway.app/{key}",
             "raw": f"{spaceb}{key}/raw",
         }
     except Exception as e:
