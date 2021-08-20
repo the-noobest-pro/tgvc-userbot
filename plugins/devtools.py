@@ -168,7 +168,7 @@ def dogbin(text, ext="txt"):
             "raw": raw,
         }
     except Exception as e:
-        return str(e)
+        return e
         print(e)
     
 DOWNLOAD_DIR = "/app/pastebin/"
