@@ -143,7 +143,7 @@ def spacebin(text, ext="txt"):
             "raw": f"{spaceb}{key}/raw",
         }
     except Exception as e:
-        return f"{e}"
+        return str(e)
         print (e)
     
 DOWNLOAD_DIR = "/app/pastebin/"
@@ -181,6 +181,7 @@ async def pastebin(client, message: Message):
         f"| <a href='{_paste['raw']}'>Raw</a></b>"
         await huehue.edit(c1m, parse_mode="html", disable_web_page_preview=True)
     else:
+        await huehue.edit(str(_paste))
         return
 
 
