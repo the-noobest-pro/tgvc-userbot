@@ -178,4 +178,29 @@ async def pastebin(client, message: Message):
         await huehue.edit(c1m, parse_mode="html", disable_web_page_preview=True)
     else:
         return
-    
+
+
+@Client.on_message(filters.command('id', prefixes='!'))
+async def msgid(client, message: Message):
+    replied = message.reply_to_message
+    chat_id = message.chat.id
+    if replied:
+        sender_id = message.reply_to_message.from_user.id
+        try:
+            if replied.sticker:
+                bot_api_file_id = replied.sticker.file_id
+            if replied.document:
+                bot_api_file_id = replied.document.file_id
+            if replied.photo:
+                bot_api_file_id = replied.photo.file_id
+            if replied.video:
+                bot_api_file_id = replied.video.file_id
+            if replied.audio:
+                bot_api_file_id = replied.audio.file_id
+            if replied.voice:
+                bot_api_file_id = replied.voice.file_id
+            await client.send_message(m.chat.id, f"**Chat ID:** `{chat_id}` \n**User ID:** `{sender_id}` \n**File ID:** `{bot_api_file_id}`", reply_to_message_id=replied.message_id)
+        except Exception as e:
+            await client.send_message(m.chat.id, f"**Chat ID:** `{chat_id}` \n**User ID:** `{sender_id}`", reply_to_message_id=replied.message_id)
+    else:
+        await message.reply_text(f"**Chat ID:** `{chat_id}`")
