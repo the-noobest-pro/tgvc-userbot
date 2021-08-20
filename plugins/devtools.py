@@ -123,8 +123,8 @@ async def terminal(client, m: Message):
         
         
 # Thanks to Avish peru for making Dogbin clone!
-dog_ = "https://pulsar-production.up.railway.app/api/v1/"
-spaceb = "https://pulsar-production.up.railway.app/api/v1/documents"
+dog_ = "https://dogbin.up.railway.app/"
+spaceb = "https://spaceb.in/api/v1/documents/"
 
 def spacebin(text, ext="txt"):
     try:
@@ -140,7 +140,7 @@ def spacebin(text, ext="txt"):
         return {
             "bin": "SpaceBin",
             "id": key,
-            "link": f"https://pulsar-production.up.railway.app/{key}",
+            "link": f"https://spaceb.in/{key}",
             "raw": f"{spaceb}{key}/raw",
         }
     except Exception as e:
@@ -168,7 +168,7 @@ def dogbin(text, ext="txt"):
             "raw": raw,
         }
     except Exception as e:
-        return e
+        return str(e)
         print(e)
     
 DOWNLOAD_DIR = "/app/pastebin/"
@@ -219,7 +219,7 @@ async def pastebin(client, message: Message):
                 draw = _pastee['raw']
                 await huehue.edit(f"__SpaceBin Down__ \n**Pasted to [DogBin]({dgbin}) | [Raw]({draw})**", disable_web_page_preview=True)
             else:
-                await huehue.edit(str(e))
+                await huehue.edit(f"{str(e)}")
         except Exception as ex:
             await huehue.edit(str(ex))
 
