@@ -17,8 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 from os import environ
 
-import logging
-from logging.handlers import RotatingFileHandler
 
 from pyrogram import Client, idle
 
@@ -38,20 +36,6 @@ PLUGINS = dict(
 )
 
 app = Client(SESSION_NAME, API_ID, API_HASH, plugins=PLUGINS)
-
-
-logging.basicConfig(level=logging.INFO,
-                    format='[%(asctime)s - %(levelname)s] - %(name)s - %(message)s',
-                    datefmt='%d-%b-%y %H:%M:%S',
-                    handlers=[
-                        RotatingFileHandler(
-                            "/app/tgvcuserbot.txt", maxBytes=2048000, backupCount=10),
-                        logging.StreamHandler()
-                    ])
-logging.getLogger("pyrogram").setLevel(logging.WARNING)
-logging.getLogger("pyrogram.session.session").setLevel(logging.DEBUG)
-logging.getLogger("pyrogram.parser.html").setLevel(logging.ERROR)
-logging.getLogger("pyrogram.connection.connection").setLevel(logging.WARNING)
 
 app.start()
 print('>>> USERBOT STARTED')
