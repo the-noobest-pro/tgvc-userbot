@@ -38,7 +38,7 @@ PLUGINS = dict(
 )
 
 app = Client(SESSION_NAME, API_ID, API_HASH, plugins=PLUGINS)
-logging.basicConfig(level=logging.INFO,
+logging.basicConfig(level=logging.DEBUG,
                     format='[%(asctime)s - %(levelname)s] - %(name)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S',
                     handlers=[
