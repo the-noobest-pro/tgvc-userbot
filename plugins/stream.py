@@ -43,6 +43,7 @@ logging.basicConfig(level=logging.INFO,
                             "/app/tgvcuserbot.txt", maxBytes=2048000, backupCount=10),
                         logging.StreamHandler()
                     ])
+logging.getLogger("pyrogram.client").setLevel(logging.WARNING)
 
 @Client.on_message(self_or_contact_filter & filters.command('stream', prefixes='!'))
 async def stream(client, message: Message):
