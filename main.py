@@ -40,9 +40,10 @@ PLUGINS = dict(
 app = Client(SESSION_NAME, API_ID, API_HASH, plugins=PLUGINS)
 
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
-logging.getLogger("pyrogram.parser.html").setLevel(logging.WARNING)
+logging.getLogger("pyrogram.session.session").setLevel(logging.DEBUG)
+logging.getLogger("pyrogram.parser.html").setLevel(logging.ERROR)
 logging.getLogger("pyrogram.connection.connection").setLevel(logging.WARNING)
-logging.basicConfig(level=logging.WARNING,
+logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s - %(levelname)s] - %(name)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S',
                     handlers=[
