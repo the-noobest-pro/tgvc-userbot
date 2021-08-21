@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !ping reply with pong
 !uptime check uptime
 """
+
 from datetime import datetime
 from time import time
 
@@ -51,6 +52,24 @@ async def _human_time_duration(seconds):
             parts.append('{} {}{}'
                          .format(amount, unit, "" if amount == 1 else "s"))
     return ', '.join(parts)
+
+
+
+
+logging.basicConfig(level=logging.INFO,
+                    format='[%(asctime)s - %(levelname)s] - %(name)s - %(message)s',
+                    datefmt='%d-%b-%y %H:%M:%S',
+                    handlers=[
+                        RotatingFileHandler(
+                            "/app/tgvc.log", maxBytes=20480, backupCount=10),
+                        logging.StreamHandler()
+                    ])
+
+logging.getLogger("pyrogram").setLevel(logging.WARNING)
+logging.getLogger("pyrogram.parser.html").setLevel(logging.ERROR)
+logging.getLogger("pyrogram.session.session").setLevel(logging.ERROR)
+logging.getLogger('googleapiclient.discovery').setLevel(logging.WARNING)
+
 
 
 @Client.on_message(filters.text
