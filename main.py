@@ -50,7 +50,7 @@ logging.basicConfig(level=logging.INFO,
                     ])
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
 logging.getLogger("pyrogram.session.session").setLevel(logging.DEBUG)
-logging.getLogger("pyrogram.parser.html").setLevel(logging.ERROR) to
+logging.getLogger("pyrogram.parser.html").setLevel(logging.ERROR)
 logging.getLogger("pyrogram.connection.connection").setLevel(logging.WARNING)
 
 app.start()
