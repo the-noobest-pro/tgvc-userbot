@@ -38,21 +38,14 @@ PLUGINS = dict(
 )
 
 app = Client(SESSION_NAME, API_ID, API_HASH, plugins=PLUGINS)
-# logging.basicConfig(level=logging.INFO)
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s - %(levelname)s] - %(name)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S',
                     handlers=[
                         RotatingFileHandler(
-                            "/app/tgvcuserbot.log", maxBytes=20480, backupCount=10),
+                            "/app/tgvcuserbot.txt", maxBytes=20480, backupCount=10),
                         logging.StreamHandler()
                     ])
-
-logging.getLogger("pyrogram").setLevel(logging.WARNING)
-logging.getLogger("pyrogram.parser.html").setLevel(logging.ERROR)
-logging.getLogger("pyrogram.session.session").setLevel(logging.ERROR)
-logging.getLogger('googleapiclient.discovery').setLevel(logging.WARNING)
-
 
 app.start()
 print('>>> USERBOT STARTED')
