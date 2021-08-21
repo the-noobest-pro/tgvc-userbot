@@ -18,6 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !ping reply with pong
 !uptime check uptime
 """
+import logging
+from logging.handlers import RotatingFileHandler
 
 from datetime import datetime
 from time import time
