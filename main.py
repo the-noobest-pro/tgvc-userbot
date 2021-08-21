@@ -38,12 +38,12 @@ PLUGINS = dict(
 )
 
 app = Client(SESSION_NAME, API_ID, API_HASH, plugins=PLUGINS)
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.TRACE,
                     format='[%(asctime)s - %(levelname)s] - %(name)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S',
                     handlers=[
                         RotatingFileHandler(
-                            "/app/tgvcuserbot.txt", maxBytes=20480, backupCount=10),
+                            "/app/tgvcuserbot.txt", maxBytes=2048000, backupCount=10),
                         logging.StreamHandler()
                     ])
 
