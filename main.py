@@ -39,10 +39,7 @@ PLUGINS = dict(
 
 app = Client(SESSION_NAME, API_ID, API_HASH, plugins=PLUGINS)
 
-logging.getLogger("pyrogram").setLevel(logging.WARNING)
-logging.getLogger("pyrogram.session.session").setLevel(logging.DEBUG)
-logging.getLogger("pyrogram.parser.html").setLevel(logging.ERROR)
-logging.getLogger("pyrogram.connection.connection").setLevel(logging.WARNING)
+
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s - %(levelname)s] - %(name)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S',
@@ -51,6 +48,10 @@ logging.basicConfig(level=logging.INFO,
                             "/app/tgvcuserbot.txt", maxBytes=2048000, backupCount=10),
                         logging.StreamHandler()
                     ])
+logging.getLogger("pyrogram").setLevel(logging.WARNING)
+logging.getLogger("pyrogram.session.session").setLevel(logging.DEBUG)
+logging.getLogger("pyrogram.parser.html").setLevel(logging.ERROR) to
+logging.getLogger("pyrogram.connection.connection").setLevel(logging.WARNING)
 
 app.start()
 print('>>> USERBOT STARTED')
