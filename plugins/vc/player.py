@@ -220,6 +220,7 @@ async def play_track(client, m: Message):
         )
         await mp.update_start_time()
         await m_status.delete()
+        await client.update_profile(first_name=f"{playlist[0].audio.title}")
         print(f"- START PLAYING: {playlist[0].audio.title}")
         logging.info(f"- START PLAYING: {playlist[0].audio.title}")
     await mp.send_playlist()
@@ -529,7 +530,9 @@ async def skip_current_playing():
     await mp.update_start_time()
     # remove old track from playlist
     old_track = playlist.pop(0)
+    await client.update_profile(first_name=f"{playlist[0].audio.title}")
     print(f"- START PLAYING: {playlist[0].audio.title}")
+    logging.info(f"- START PLAYING: {playlist[0].audio.title}")
     await mp.send_playlist()
     os.remove(os.path.join(
         download_dir,
