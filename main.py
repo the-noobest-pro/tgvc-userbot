@@ -16,6 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 from os import environ
+import logging
 
 
 from pyrogram import Client, idle
@@ -39,6 +40,8 @@ app = Client(SESSION_NAME, API_ID, API_HASH, plugins=PLUGINS)
 
 app.start()
 print('>>> USERBOT STARTED')
+logging.info('>>> USERBOT STARTED')
 idle()
 app.stop()
 print('\n>>> USERBOT STOPPED')
+logging.info('>>> USERBOT STOPPED')
