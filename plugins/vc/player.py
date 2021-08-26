@@ -34,6 +34,7 @@ How to use:
 
 import asyncio
 import os
+import logging
 from datetime import datetime, timedelta
 
 # noinspection PyPackageRequirements
@@ -220,6 +221,7 @@ async def play_track(client, m: Message):
         await mp.update_start_time()
         await m_status.delete()
         print(f"- START PLAYING: {playlist[0].audio.title}")
+        logging.info(f"- START PLAYING: {playlist[0].audio.title}")
     await mp.send_playlist()
     for track in playlist[:2]:
         await download_audio(track)
